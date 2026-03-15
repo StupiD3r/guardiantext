@@ -1,0 +1,1001 @@
+id,toxic_sentence,clean_sentence
+1,shut the fuck up,please be quiet
+2,this system is stupid,this system has design issues
+3,stop being dumb,please think more carefully
+4,you're wasting everyone's time,please focus on the task
+5,this game is fucking trash,this game is not good
+6,you're wasting everyone's time,please focus on the task
+7,your idea is stupid,I disagree with your idea
+8,this explanation is trash,this explanation needs improvement
+9,that was a dumb decision,that may not be the best decision
+10,you clearly don't understand,you may want to review the topic
+11,you're wasting everyone's time,please focus on the task
+12,this feature is dumb,this feature may need improvement
+13,your idea is stupid,I disagree with your idea
+14,this project is bullshit,this project has issues
+15,this system is stupid,this system has design issues
+16,shut the fuck up,please be quiet
+17,shut the fuck up,please be quiet
+18,this code is shit,this code has problems
+19,this is fucking terrible,this is very bad
+20,your work is garbage,this work needs improvement
+21,why are you so slow,please try to work faster
+22,this explanation is trash,this explanation needs improvement
+23,this is fucking terrible,this is very bad
+24,shut the fuck up,please be quiet
+25,why are you so slow,please try to work faster
+26,you're wasting everyone's time,please focus on the task
+27,you're the worst teammate,we should cooperate better
+28,you clearly don't understand,you may want to review the topic
+29,you are so stupid,I think you are mistaken
+30,your work is garbage,this work needs improvement
+31,what the hell are you doing,what are you doing
+32,this explanation is trash,this explanation needs improvement
+33,this is fucking terrible,this is very bad
+34,you are so stupid,I think you are mistaken
+35,this project is bullshit,this project has issues
+36,this system is stupid,this system has design issues
+37,you clearly don't understand,you may want to review the topic
+38,your work is garbage,this work needs improvement
+39,this system is stupid,this system has design issues
+40,you're wasting everyone's time,please focus on the task
+41,why are you so useless,you might need more help
+42,this is fucking terrible,this is very bad
+43,you're wasting everyone's time,please focus on the task
+44,why are you so useless,you might need more help
+45,why are you so slow,please try to work faster
+46,that was a dumb decision,that may not be the best decision
+47,stop being dumb,please think more carefully
+48,this game is fucking trash,this game is not good
+49,this feature is dumb,this feature may need improvement
+50,this project is bullshit,this project has issues
+51,that was a dumb decision,that may not be the best decision
+52,this system is stupid,this system has design issues
+53,why are you so slow,please try to work faster
+54,your work is garbage,this work needs improvement
+55,stop being dumb,please think more carefully
+56,this system is stupid,this system has design issues
+57,why are you so slow,please try to work faster
+58,why are you so useless,you might need more help
+59,you are so stupid,I think you are mistaken
+60,this explanation is trash,this explanation needs improvement
+61,that was a dumb decision,that may not be the best decision
+62,this game is fucking trash,this game is not good
+63,you are so stupid,I think you are mistaken
+64,this is fucking terrible,this is very bad
+65,why are you so slow,please try to work faster
+66,your work is garbage,this work needs improvement
+67,why are you so slow,please try to work faster
+68,you clearly don't understand,you may want to review the topic
+69,this project is bullshit,this project has issues
+70,stop being dumb,please think more carefully
+71,your idea is stupid,I disagree with your idea
+72,you're the worst teammate,we should cooperate better
+73,why are you so useless,you might need more help
+74,your idea is stupid,I disagree with your idea
+75,why are you so slow,please try to work faster
+76,your work is garbage,this work needs improvement
+77,you're annoying as hell,you are being annoying
+78,this explanation is trash,this explanation needs improvement
+79,you are so stupid,I think you are mistaken
+80,you're annoying as hell,you are being annoying
+81,this system is stupid,this system has design issues
+82,this code is shit,this code has problems
+83,shut the fuck up,please be quiet
+84,this code is shit,this code has problems
+85,why are you so slow,please try to work faster
+86,you clearly don't understand,you may want to review the topic
+87,shut the fuck up,please be quiet
+88,you clearly don't understand,you may want to review the topic
+89,you clearly don't understand,you may want to review the topic
+90,this system is stupid,this system has design issues
+91,this feature is dumb,this feature may need improvement
+92,this feature is dumb,this feature may need improvement
+93,stop being dumb,please think more carefully
+94,you're wasting everyone's time,please focus on the task
+95,this system is stupid,this system has design issues
+96,shut the fuck up,please be quiet
+97,this game is fucking trash,this game is not good
+98,this system is stupid,this system has design issues
+99,you're wasting everyone's time,please focus on the task
+100,this is fucking terrible,this is very bad
+101,you are so stupid,I think you are mistaken
+102,you clearly don't understand,you may want to review the topic
+103,why are you so useless,you might need more help
+104,shut the fuck up,please be quiet
+105,this feature is dumb,this feature may need improvement
+106,shut the fuck up,please be quiet
+107,this system is stupid,this system has design issues
+108,this project is bullshit,this project has issues
+109,this feature is dumb,this feature may need improvement
+110,this explanation is trash,this explanation needs improvement
+111,this system is stupid,this system has design issues
+112,you are so stupid,I think you are mistaken
+113,your idea is stupid,I disagree with your idea
+114,that was a dumb decision,that may not be the best decision
+115,this feature is dumb,this feature may need improvement
+116,why are you so useless,you might need more help
+117,this project is bullshit,this project has issues
+118,your work is garbage,this work needs improvement
+119,this feature is dumb,this feature may need improvement
+120,your work is garbage,this work needs improvement
+121,stop being dumb,please think more carefully
+122,that was a dumb decision,that may not be the best decision
+123,you clearly don't understand,you may want to review the topic
+124,that was a dumb decision,that may not be the best decision
+125,what the hell are you doing,what are you doing
+126,your work is garbage,this work needs improvement
+127,this is fucking terrible,this is very bad
+128,you clearly don't understand,you may want to review the topic
+129,your work is garbage,this work needs improvement
+130,this feature is dumb,this feature may need improvement
+131,this code is shit,this code has problems
+132,you're the worst teammate,we should cooperate better
+133,you're the worst teammate,we should cooperate better
+134,why are you so useless,you might need more help
+135,this feature is dumb,this feature may need improvement
+136,you're the worst teammate,we should cooperate better
+137,this is fucking terrible,this is very bad
+138,why are you so useless,you might need more help
+139,that was a dumb decision,that may not be the best decision
+140,this code is shit,this code has problems
+141,this project is bullshit,this project has issues
+142,shut the fuck up,please be quiet
+143,your idea is stupid,I disagree with your idea
+144,shut the fuck up,please be quiet
+145,that was a dumb decision,that may not be the best decision
+146,this code is shit,this code has problems
+147,your idea is stupid,I disagree with your idea
+148,you're the worst teammate,we should cooperate better
+149,your work is garbage,this work needs improvement
+150,this project is bullshit,this project has issues
+151,you clearly don't understand,you may want to review the topic
+152,you're annoying as hell,you are being annoying
+153,stop being dumb,please think more carefully
+154,stop being dumb,please think more carefully
+155,this feature is dumb,this feature may need improvement
+156,why are you so useless,you might need more help
+157,this code is shit,this code has problems
+158,stop being dumb,please think more carefully
+159,shut the fuck up,please be quiet
+160,stop being dumb,please think more carefully
+161,shut the fuck up,please be quiet
+162,this explanation is trash,this explanation needs improvement
+163,your work is garbage,this work needs improvement
+164,stop being dumb,please think more carefully
+165,shut the fuck up,please be quiet
+166,why are you so useless,you might need more help
+167,why are you so useless,you might need more help
+168,you are so stupid,I think you are mistaken
+169,that was a dumb decision,that may not be the best decision
+170,your idea is stupid,I disagree with your idea
+171,this system is stupid,this system has design issues
+172,why are you so useless,you might need more help
+173,this system is stupid,this system has design issues
+174,you're wasting everyone's time,please focus on the task
+175,this explanation is trash,this explanation needs improvement
+176,shut the fuck up,please be quiet
+177,why are you so slow,please try to work faster
+178,this code is shit,this code has problems
+179,this is fucking terrible,this is very bad
+180,you're annoying as hell,you are being annoying
+181,this is fucking terrible,this is very bad
+182,you're the worst teammate,we should cooperate better
+183,your work is garbage,this work needs improvement
+184,you clearly don't understand,you may want to review the topic
+185,this is fucking terrible,this is very bad
+186,this game is fucking trash,this game is not good
+187,you're annoying as hell,you are being annoying
+188,you are so stupid,I think you are mistaken
+189,you clearly don't understand,you may want to review the topic
+190,that was a dumb decision,that may not be the best decision
+191,stop being dumb,please think more carefully
+192,you clearly don't understand,you may want to review the topic
+193,this project is bullshit,this project has issues
+194,this feature is dumb,this feature may need improvement
+195,you're the worst teammate,we should cooperate better
+196,this code is shit,this code has problems
+197,shut the fuck up,please be quiet
+198,stop being dumb,please think more carefully
+199,what the hell are you doing,what are you doing
+200,this is fucking terrible,this is very bad
+201,you're wasting everyone's time,please focus on the task
+202,this feature is dumb,this feature may need improvement
+203,what the hell are you doing,what are you doing
+204,your idea is stupid,I disagree with your idea
+205,this game is fucking trash,this game is not good
+206,why are you so useless,you might need more help
+207,this explanation is trash,this explanation needs improvement
+208,you are so stupid,I think you are mistaken
+209,this code is shit,this code has problems
+210,you're the worst teammate,we should cooperate better
+211,what the hell are you doing,what are you doing
+212,what the hell are you doing,what are you doing
+213,you're wasting everyone's time,please focus on the task
+214,why are you so useless,you might need more help
+215,why are you so useless,you might need more help
+216,you're the worst teammate,we should cooperate better
+217,your work is garbage,this work needs improvement
+218,your work is garbage,this work needs improvement
+219,this is fucking terrible,this is very bad
+220,what the hell are you doing,what are you doing
+221,you're the worst teammate,we should cooperate better
+222,why are you so useless,you might need more help
+223,this code is shit,this code has problems
+224,what the hell are you doing,what are you doing
+225,this system is stupid,this system has design issues
+226,this code is shit,this code has problems
+227,your idea is stupid,I disagree with your idea
+228,this game is fucking trash,this game is not good
+229,this explanation is trash,this explanation needs improvement
+230,you are so stupid,I think you are mistaken
+231,this system is stupid,this system has design issues
+232,this project is bullshit,this project has issues
+233,why are you so useless,you might need more help
+234,what the hell are you doing,what are you doing
+235,your work is garbage,this work needs improvement
+236,that was a dumb decision,that may not be the best decision
+237,this code is shit,this code has problems
+238,you're wasting everyone's time,please focus on the task
+239,this explanation is trash,this explanation needs improvement
+240,this code is shit,this code has problems
+241,why are you so useless,you might need more help
+242,you clearly don't understand,you may want to review the topic
+243,this code is shit,this code has problems
+244,this code is shit,this code has problems
+245,you're wasting everyone's time,please focus on the task
+246,this feature is dumb,this feature may need improvement
+247,you're wasting everyone's time,please focus on the task
+248,your idea is stupid,I disagree with your idea
+249,shut the fuck up,please be quiet
+250,this is fucking terrible,this is very bad
+251,this is fucking terrible,this is very bad
+252,you are so stupid,I think you are mistaken
+253,why are you so slow,please try to work faster
+254,this game is fucking trash,this game is not good
+255,you're annoying as hell,you are being annoying
+256,you're wasting everyone's time,please focus on the task
+257,this explanation is trash,this explanation needs improvement
+258,you're annoying as hell,you are being annoying
+259,this project is bullshit,this project has issues
+260,you're the worst teammate,we should cooperate better
+261,why are you so slow,please try to work faster
+262,shut the fuck up,please be quiet
+263,this game is fucking trash,this game is not good
+264,this project is bullshit,this project has issues
+265,that was a dumb decision,that may not be the best decision
+266,this is fucking terrible,this is very bad
+267,you're annoying as hell,you are being annoying
+268,you're wasting everyone's time,please focus on the task
+269,that was a dumb decision,that may not be the best decision
+270,this system is stupid,this system has design issues
+271,your work is garbage,this work needs improvement
+272,this explanation is trash,this explanation needs improvement
+273,you're wasting everyone's time,please focus on the task
+274,what the hell are you doing,what are you doing
+275,you are so stupid,I think you are mistaken
+276,stop being dumb,please think more carefully
+277,what the hell are you doing,what are you doing
+278,you're annoying as hell,you are being annoying
+279,this code is shit,this code has problems
+280,shut the fuck up,please be quiet
+281,you're the worst teammate,we should cooperate better
+282,this system is stupid,this system has design issues
+283,this game is fucking trash,this game is not good
+284,this game is fucking trash,this game is not good
+285,this game is fucking trash,this game is not good
+286,you are so stupid,I think you are mistaken
+287,you're the worst teammate,we should cooperate better
+288,you clearly don't understand,you may want to review the topic
+289,you clearly don't understand,you may want to review the topic
+290,why are you so slow,please try to work faster
+291,you're the worst teammate,we should cooperate better
+292,you clearly don't understand,you may want to review the topic
+293,you clearly don't understand,you may want to review the topic
+294,you are so stupid,I think you are mistaken
+295,what the hell are you doing,what are you doing
+296,you're annoying as hell,you are being annoying
+297,this project is bullshit,this project has issues
+298,that was a dumb decision,that may not be the best decision
+299,shut the fuck up,please be quiet
+300,stop being dumb,please think more carefully
+301,stop being dumb,please think more carefully
+302,this feature is dumb,this feature may need improvement
+303,this game is fucking trash,this game is not good
+304,shut the fuck up,please be quiet
+305,this game is fucking trash,this game is not good
+306,that was a dumb decision,that may not be the best decision
+307,this code is shit,this code has problems
+308,your work is garbage,this work needs improvement
+309,why are you so slow,please try to work faster
+310,this is fucking terrible,this is very bad
+311,you're annoying as hell,you are being annoying
+312,this system is stupid,this system has design issues
+313,this code is shit,this code has problems
+314,this is fucking terrible,this is very bad
+315,you're annoying as hell,you are being annoying
+316,this game is fucking trash,this game is not good
+317,you're wasting everyone's time,please focus on the task
+318,this is fucking terrible,this is very bad
+319,this code is shit,this code has problems
+320,this game is fucking trash,this game is not good
+321,you're wasting everyone's time,please focus on the task
+322,your work is garbage,this work needs improvement
+323,stop being dumb,please think more carefully
+324,this system is stupid,this system has design issues
+325,that was a dumb decision,that may not be the best decision
+326,this game is fucking trash,this game is not good
+327,what the hell are you doing,what are you doing
+328,stop being dumb,please think more carefully
+329,what the hell are you doing,what are you doing
+330,shut the fuck up,please be quiet
+331,you're annoying as hell,you are being annoying
+332,this system is stupid,this system has design issues
+333,you're annoying as hell,you are being annoying
+334,this explanation is trash,this explanation needs improvement
+335,this code is shit,this code has problems
+336,what the hell are you doing,what are you doing
+337,this feature is dumb,this feature may need improvement
+338,this code is shit,this code has problems
+339,why are you so slow,please try to work faster
+340,this feature is dumb,this feature may need improvement
+341,this system is stupid,this system has design issues
+342,you're the worst teammate,we should cooperate better
+343,why are you so slow,please try to work faster
+344,this feature is dumb,this feature may need improvement
+345,you clearly don't understand,you may want to review the topic
+346,you clearly don't understand,you may want to review the topic
+347,shut the fuck up,please be quiet
+348,this explanation is trash,this explanation needs improvement
+349,why are you so slow,please try to work faster
+350,this game is fucking trash,this game is not good
+351,your work is garbage,this work needs improvement
+352,this system is stupid,this system has design issues
+353,your work is garbage,this work needs improvement
+354,why are you so slow,please try to work faster
+355,this system is stupid,this system has design issues
+356,stop being dumb,please think more carefully
+357,you are so stupid,I think you are mistaken
+358,your idea is stupid,I disagree with your idea
+359,what the hell are you doing,what are you doing
+360,this system is stupid,this system has design issues
+361,this is fucking terrible,this is very bad
+362,this code is shit,this code has problems
+363,your work is garbage,this work needs improvement
+364,this explanation is trash,this explanation needs improvement
+365,you are so stupid,I think you are mistaken
+366,why are you so useless,you might need more help
+367,you're wasting everyone's time,please focus on the task
+368,stop being dumb,please think more carefully
+369,this game is fucking trash,this game is not good
+370,you're annoying as hell,you are being annoying
+371,why are you so slow,please try to work faster
+372,you're annoying as hell,you are being annoying
+373,this project is bullshit,this project has issues
+374,you're the worst teammate,we should cooperate better
+375,this feature is dumb,this feature may need improvement
+376,what the hell are you doing,what are you doing
+377,you're the worst teammate,we should cooperate better
+378,this feature is dumb,this feature may need improvement
+379,why are you so slow,please try to work faster
+380,this project is bullshit,this project has issues
+381,this explanation is trash,this explanation needs improvement
+382,why are you so slow,please try to work faster
+383,this game is fucking trash,this game is not good
+384,your idea is stupid,I disagree with your idea
+385,why are you so slow,please try to work faster
+386,this system is stupid,this system has design issues
+387,why are you so useless,you might need more help
+388,this is fucking terrible,this is very bad
+389,this code is shit,this code has problems
+390,you clearly don't understand,you may want to review the topic
+391,why are you so useless,you might need more help
+392,what the hell are you doing,what are you doing
+393,stop being dumb,please think more carefully
+394,this code is shit,this code has problems
+395,you're wasting everyone's time,please focus on the task
+396,your work is garbage,this work needs improvement
+397,your work is garbage,this work needs improvement
+398,you're annoying as hell,you are being annoying
+399,shut the fuck up,please be quiet
+400,you're wasting everyone's time,please focus on the task
+401,this is fucking terrible,this is very bad
+402,why are you so useless,you might need more help
+403,this feature is dumb,this feature may need improvement
+404,your idea is stupid,I disagree with your idea
+405,you're the worst teammate,we should cooperate better
+406,you're the worst teammate,we should cooperate better
+407,you're annoying as hell,you are being annoying
+408,your idea is stupid,I disagree with your idea
+409,this system is stupid,this system has design issues
+410,this explanation is trash,this explanation needs improvement
+411,this is fucking terrible,this is very bad
+412,stop being dumb,please think more carefully
+413,this is fucking terrible,this is very bad
+414,this code is shit,this code has problems
+415,you are so stupid,I think you are mistaken
+416,this system is stupid,this system has design issues
+417,what the hell are you doing,what are you doing
+418,this explanation is trash,this explanation needs improvement
+419,why are you so useless,you might need more help
+420,you're annoying as hell,you are being annoying
+421,this system is stupid,this system has design issues
+422,this feature is dumb,this feature may need improvement
+423,this is fucking terrible,this is very bad
+424,you're annoying as hell,you are being annoying
+425,you clearly don't understand,you may want to review the topic
+426,you're annoying as hell,you are being annoying
+427,this feature is dumb,this feature may need improvement
+428,this project is bullshit,this project has issues
+429,this game is fucking trash,this game is not good
+430,you're the worst teammate,we should cooperate better
+431,stop being dumb,please think more carefully
+432,that was a dumb decision,that may not be the best decision
+433,you're wasting everyone's time,please focus on the task
+434,this explanation is trash,this explanation needs improvement
+435,you're the worst teammate,we should cooperate better
+436,this project is bullshit,this project has issues
+437,stop being dumb,please think more carefully
+438,why are you so useless,you might need more help
+439,you're wasting everyone's time,please focus on the task
+440,your work is garbage,this work needs improvement
+441,what the hell are you doing,what are you doing
+442,you clearly don't understand,you may want to review the topic
+443,this explanation is trash,this explanation needs improvement
+444,stop being dumb,please think more carefully
+445,you clearly don't understand,you may want to review the topic
+446,what the hell are you doing,what are you doing
+447,shut the fuck up,please be quiet
+448,you're annoying as hell,you are being annoying
+449,you're wasting everyone's time,please focus on the task
+450,this project is bullshit,this project has issues
+451,this feature is dumb,this feature may need improvement
+452,your idea is stupid,I disagree with your idea
+453,this feature is dumb,this feature may need improvement
+454,what the hell are you doing,what are you doing
+455,this is fucking terrible,this is very bad
+456,this game is fucking trash,this game is not good
+457,why are you so slow,please try to work faster
+458,why are you so useless,you might need more help
+459,this code is shit,this code has problems
+460,you're annoying as hell,you are being annoying
+461,this feature is dumb,this feature may need improvement
+462,why are you so slow,please try to work faster
+463,this code is shit,this code has problems
+464,that was a dumb decision,that may not be the best decision
+465,this is fucking terrible,this is very bad
+466,this project is bullshit,this project has issues
+467,this is fucking terrible,this is very bad
+468,this explanation is trash,this explanation needs improvement
+469,what the hell are you doing,what are you doing
+470,you clearly don't understand,you may want to review the topic
+471,this project is bullshit,this project has issues
+472,this game is fucking trash,this game is not good
+473,why are you so useless,you might need more help
+474,this code is shit,this code has problems
+475,you're annoying as hell,you are being annoying
+476,this is fucking terrible,this is very bad
+477,this game is fucking trash,this game is not good
+478,your idea is stupid,I disagree with your idea
+479,this system is stupid,this system has design issues
+480,your work is garbage,this work needs improvement
+481,what the hell are you doing,what are you doing
+482,you're wasting everyone's time,please focus on the task
+483,this project is bullshit,this project has issues
+484,this game is fucking trash,this game is not good
+485,you're the worst teammate,we should cooperate better
+486,this code is shit,this code has problems
+487,you're wasting everyone's time,please focus on the task
+488,you are so stupid,I think you are mistaken
+489,stop being dumb,please think more carefully
+490,this code is shit,this code has problems
+491,you're the worst teammate,we should cooperate better
+492,this project is bullshit,this project has issues
+493,this feature is dumb,this feature may need improvement
+494,you are so stupid,I think you are mistaken
+495,shut the fuck up,please be quiet
+496,why are you so useless,you might need more help
+497,this system is stupid,this system has design issues
+498,what the hell are you doing,what are you doing
+499,you're annoying as hell,you are being annoying
+500,this feature is dumb,this feature may need improvement
+501,what the hell are you doing,what are you doing
+502,this feature is dumb,this feature may need improvement
+503,you're annoying as hell,you are being annoying
+504,you're wasting everyone's time,please focus on the task
+505,this explanation is trash,this explanation needs improvement
+506,this feature is dumb,this feature may need improvement
+507,this project is bullshit,this project has issues
+508,this is fucking terrible,this is very bad
+509,you are so stupid,I think you are mistaken
+510,what the hell are you doing,what are you doing
+511,you're wasting everyone's time,please focus on the task
+512,this game is fucking trash,this game is not good
+513,this system is stupid,this system has design issues
+514,your idea is stupid,I disagree with your idea
+515,why are you so useless,you might need more help
+516,stop being dumb,please think more carefully
+517,you're wasting everyone's time,please focus on the task
+518,that was a dumb decision,that may not be the best decision
+519,shut the fuck up,please be quiet
+520,your work is garbage,this work needs improvement
+521,this project is bullshit,this project has issues
+522,you're wasting everyone's time,please focus on the task
+523,you're the worst teammate,we should cooperate better
+524,shut the fuck up,please be quiet
+525,your idea is stupid,I disagree with your idea
+526,this game is fucking trash,this game is not good
+527,your idea is stupid,I disagree with your idea
+528,this is fucking terrible,this is very bad
+529,this explanation is trash,this explanation needs improvement
+530,this project is bullshit,this project has issues
+531,that was a dumb decision,that may not be the best decision
+532,what the hell are you doing,what are you doing
+533,why are you so useless,you might need more help
+534,this game is fucking trash,this game is not good
+535,shut the fuck up,please be quiet
+536,why are you so useless,you might need more help
+537,why are you so useless,you might need more help
+538,this game is fucking trash,this game is not good
+539,what the hell are you doing,what are you doing
+540,this project is bullshit,this project has issues
+541,that was a dumb decision,that may not be the best decision
+542,this explanation is trash,this explanation needs improvement
+543,you're the worst teammate,we should cooperate better
+544,you are so stupid,I think you are mistaken
+545,you're the worst teammate,we should cooperate better
+546,your work is garbage,this work needs improvement
+547,this game is fucking trash,this game is not good
+548,why are you so useless,you might need more help
+549,that was a dumb decision,that may not be the best decision
+550,why are you so useless,you might need more help
+551,this feature is dumb,this feature may need improvement
+552,this game is fucking trash,this game is not good
+553,why are you so slow,please try to work faster
+554,this system is stupid,this system has design issues
+555,this explanation is trash,this explanation needs improvement
+556,this project is bullshit,this project has issues
+557,this code is shit,this code has problems
+558,stop being dumb,please think more carefully
+559,this feature is dumb,this feature may need improvement
+560,this system is stupid,this system has design issues
+561,you're annoying as hell,you are being annoying
+562,this code is shit,this code has problems
+563,you're wasting everyone's time,please focus on the task
+564,why are you so useless,you might need more help
+565,this game is fucking trash,this game is not good
+566,you're wasting everyone's time,please focus on the task
+567,shut the fuck up,please be quiet
+568,this system is stupid,this system has design issues
+569,that was a dumb decision,that may not be the best decision
+570,that was a dumb decision,that may not be the best decision
+571,this is fucking terrible,this is very bad
+572,stop being dumb,please think more carefully
+573,why are you so useless,you might need more help
+574,this feature is dumb,this feature may need improvement
+575,you're wasting everyone's time,please focus on the task
+576,that was a dumb decision,that may not be the best decision
+577,this system is stupid,this system has design issues
+578,this explanation is trash,this explanation needs improvement
+579,stop being dumb,please think more carefully
+580,you're the worst teammate,we should cooperate better
+581,that was a dumb decision,that may not be the best decision
+582,your work is garbage,this work needs improvement
+583,what the hell are you doing,what are you doing
+584,this explanation is trash,this explanation needs improvement
+585,you are so stupid,I think you are mistaken
+586,that was a dumb decision,that may not be the best decision
+587,your idea is stupid,I disagree with your idea
+588,this project is bullshit,this project has issues
+589,your idea is stupid,I disagree with your idea
+590,your idea is stupid,I disagree with your idea
+591,this code is shit,this code has problems
+592,why are you so slow,please try to work faster
+593,stop being dumb,please think more carefully
+594,this code is shit,this code has problems
+595,you're the worst teammate,we should cooperate better
+596,you're annoying as hell,you are being annoying
+597,that was a dumb decision,that may not be the best decision
+598,you're the worst teammate,we should cooperate better
+599,this is fucking terrible,this is very bad
+600,this code is shit,this code has problems
+601,you are so stupid,I think you are mistaken
+602,this explanation is trash,this explanation needs improvement
+603,this game is fucking trash,this game is not good
+604,you're wasting everyone's time,please focus on the task
+605,you're annoying as hell,you are being annoying
+606,this explanation is trash,this explanation needs improvement
+607,this explanation is trash,this explanation needs improvement
+608,you clearly don't understand,you may want to review the topic
+609,what the hell are you doing,what are you doing
+610,shut the fuck up,please be quiet
+611,this explanation is trash,this explanation needs improvement
+612,your work is garbage,this work needs improvement
+613,this system is stupid,this system has design issues
+614,why are you so slow,please try to work faster
+615,you're wasting everyone's time,please focus on the task
+616,this project is bullshit,this project has issues
+617,your work is garbage,this work needs improvement
+618,that was a dumb decision,that may not be the best decision
+619,you're annoying as hell,you are being annoying
+620,this system is stupid,this system has design issues
+621,your idea is stupid,I disagree with your idea
+622,you're wasting everyone's time,please focus on the task
+623,you're wasting everyone's time,please focus on the task
+624,you are so stupid,I think you are mistaken
+625,you are so stupid,I think you are mistaken
+626,this feature is dumb,this feature may need improvement
+627,this explanation is trash,this explanation needs improvement
+628,this explanation is trash,this explanation needs improvement
+629,you're the worst teammate,we should cooperate better
+630,what the hell are you doing,what are you doing
+631,you're the worst teammate,we should cooperate better
+632,this explanation is trash,this explanation needs improvement
+633,this code is shit,this code has problems
+634,shut the fuck up,please be quiet
+635,this explanation is trash,this explanation needs improvement
+636,you're annoying as hell,you are being annoying
+637,that was a dumb decision,that may not be the best decision
+638,this system is stupid,this system has design issues
+639,you are so stupid,I think you are mistaken
+640,why are you so useless,you might need more help
+641,why are you so slow,please try to work faster
+642,what the hell are you doing,what are you doing
+643,this project is bullshit,this project has issues
+644,this explanation is trash,this explanation needs improvement
+645,this feature is dumb,this feature may need improvement
+646,that was a dumb decision,that may not be the best decision
+647,this is fucking terrible,this is very bad
+648,shut the fuck up,please be quiet
+649,you clearly don't understand,you may want to review the topic
+650,this explanation is trash,this explanation needs improvement
+651,you're the worst teammate,we should cooperate better
+652,you clearly don't understand,you may want to review the topic
+653,this code is shit,this code has problems
+654,that was a dumb decision,that may not be the best decision
+655,why are you so useless,you might need more help
+656,stop being dumb,please think more carefully
+657,you are so stupid,I think you are mistaken
+658,why are you so slow,please try to work faster
+659,this code is shit,this code has problems
+660,this system is stupid,this system has design issues
+661,your idea is stupid,I disagree with your idea
+662,this game is fucking trash,this game is not good
+663,this is fucking terrible,this is very bad
+664,this is fucking terrible,this is very bad
+665,that was a dumb decision,that may not be the best decision
+666,you're annoying as hell,you are being annoying
+667,stop being dumb,please think more carefully
+668,you're wasting everyone's time,please focus on the task
+669,this project is bullshit,this project has issues
+670,what the hell are you doing,what are you doing
+671,your idea is stupid,I disagree with your idea
+672,stop being dumb,please think more carefully
+673,you're annoying as hell,you are being annoying
+674,your idea is stupid,I disagree with your idea
+675,you're annoying as hell,you are being annoying
+676,what the hell are you doing,what are you doing
+677,that was a dumb decision,that may not be the best decision
+678,you're the worst teammate,we should cooperate better
+679,that was a dumb decision,that may not be the best decision
+680,you are so stupid,I think you are mistaken
+681,your work is garbage,this work needs improvement
+682,you're the worst teammate,we should cooperate better
+683,this is fucking terrible,this is very bad
+684,why are you so slow,please try to work faster
+685,this is fucking terrible,this is very bad
+686,stop being dumb,please think more carefully
+687,your work is garbage,this work needs improvement
+688,you are so stupid,I think you are mistaken
+689,you are so stupid,I think you are mistaken
+690,shut the fuck up,please be quiet
+691,this system is stupid,this system has design issues
+692,this feature is dumb,this feature may need improvement
+693,this is fucking terrible,this is very bad
+694,why are you so slow,please try to work faster
+695,what the hell are you doing,what are you doing
+696,why are you so slow,please try to work faster
+697,this game is fucking trash,this game is not good
+698,this is fucking terrible,this is very bad
+699,you're the worst teammate,we should cooperate better
+700,this game is fucking trash,this game is not good
+701,this game is fucking trash,this game is not good
+702,stop being dumb,please think more carefully
+703,this feature is dumb,this feature may need improvement
+704,you're wasting everyone's time,please focus on the task
+705,that was a dumb decision,that may not be the best decision
+706,what the hell are you doing,what are you doing
+707,this explanation is trash,this explanation needs improvement
+708,shut the fuck up,please be quiet
+709,this is fucking terrible,this is very bad
+710,shut the fuck up,please be quiet
+711,this game is fucking trash,this game is not good
+712,shut the fuck up,please be quiet
+713,this feature is dumb,this feature may need improvement
+714,why are you so useless,you might need more help
+715,why are you so slow,please try to work faster
+716,this code is shit,this code has problems
+717,your idea is stupid,I disagree with your idea
+718,your idea is stupid,I disagree with your idea
+719,your work is garbage,this work needs improvement
+720,this game is fucking trash,this game is not good
+721,you are so stupid,I think you are mistaken
+722,you're the worst teammate,we should cooperate better
+723,stop being dumb,please think more carefully
+724,this project is bullshit,this project has issues
+725,this code is shit,this code has problems
+726,why are you so useless,you might need more help
+727,you're the worst teammate,we should cooperate better
+728,this system is stupid,this system has design issues
+729,why are you so slow,please try to work faster
+730,why are you so useless,you might need more help
+731,this feature is dumb,this feature may need improvement
+732,why are you so useless,you might need more help
+733,why are you so useless,you might need more help
+734,you're wasting everyone's time,please focus on the task
+735,why are you so slow,please try to work faster
+736,stop being dumb,please think more carefully
+737,this code is shit,this code has problems
+738,your idea is stupid,I disagree with your idea
+739,this code is shit,this code has problems
+740,you're annoying as hell,you are being annoying
+741,this game is fucking trash,this game is not good
+742,shut the fuck up,please be quiet
+743,your work is garbage,this work needs improvement
+744,that was a dumb decision,that may not be the best decision
+745,this system is stupid,this system has design issues
+746,you're annoying as hell,you are being annoying
+747,this is fucking terrible,this is very bad
+748,shut the fuck up,please be quiet
+749,this game is fucking trash,this game is not good
+750,stop being dumb,please think more carefully
+751,why are you so slow,please try to work faster
+752,you are so stupid,I think you are mistaken
+753,why are you so slow,please try to work faster
+754,this system is stupid,this system has design issues
+755,this system is stupid,this system has design issues
+756,stop being dumb,please think more carefully
+757,this system is stupid,this system has design issues
+758,you're the worst teammate,we should cooperate better
+759,this feature is dumb,this feature may need improvement
+760,your work is garbage,this work needs improvement
+761,this explanation is trash,this explanation needs improvement
+762,this is fucking terrible,this is very bad
+763,your work is garbage,this work needs improvement
+764,you're wasting everyone's time,please focus on the task
+765,your idea is stupid,I disagree with your idea
+766,this is fucking terrible,this is very bad
+767,why are you so slow,please try to work faster
+768,this project is bullshit,this project has issues
+769,that was a dumb decision,that may not be the best decision
+770,this code is shit,this code has problems
+771,this feature is dumb,this feature may need improvement
+772,you are so stupid,I think you are mistaken
+773,this explanation is trash,this explanation needs improvement
+774,this explanation is trash,this explanation needs improvement
+775,you're wasting everyone's time,please focus on the task
+776,you clearly don't understand,you may want to review the topic
+777,shut the fuck up,please be quiet
+778,your idea is stupid,I disagree with your idea
+779,this game is fucking trash,this game is not good
+780,why are you so useless,you might need more help
+781,what the hell are you doing,what are you doing
+782,what the hell are you doing,what are you doing
+783,why are you so useless,you might need more help
+784,this is fucking terrible,this is very bad
+785,your idea is stupid,I disagree with your idea
+786,stop being dumb,please think more carefully
+787,this is fucking terrible,this is very bad
+788,you're wasting everyone's time,please focus on the task
+789,what the hell are you doing,what are you doing
+790,you are so stupid,I think you are mistaken
+791,you are so stupid,I think you are mistaken
+792,this is fucking terrible,this is very bad
+793,this game is fucking trash,this game is not good
+794,this system is stupid,this system has design issues
+795,this explanation is trash,this explanation needs improvement
+796,this project is bullshit,this project has issues
+797,you're annoying as hell,you are being annoying
+798,stop being dumb,please think more carefully
+799,you're the worst teammate,we should cooperate better
+800,why are you so slow,please try to work faster
+801,you clearly don't understand,you may want to review the topic
+802,shut the fuck up,please be quiet
+803,this feature is dumb,this feature may need improvement
+804,this feature is dumb,this feature may need improvement
+805,why are you so slow,please try to work faster
+806,you're the worst teammate,we should cooperate better
+807,this project is bullshit,this project has issues
+808,you're annoying as hell,you are being annoying
+809,your work is garbage,this work needs improvement
+810,your work is garbage,this work needs improvement
+811,this code is shit,this code has problems
+812,that was a dumb decision,that may not be the best decision
+813,you are so stupid,I think you are mistaken
+814,this explanation is trash,this explanation needs improvement
+815,what the hell are you doing,what are you doing
+816,this is fucking terrible,this is very bad
+817,you're annoying as hell,you are being annoying
+818,you clearly don't understand,you may want to review the topic
+819,you're the worst teammate,we should cooperate better
+820,you clearly don't understand,you may want to review the topic
+821,your work is garbage,this work needs improvement
+822,this project is bullshit,this project has issues
+823,this feature is dumb,this feature may need improvement
+824,why are you so slow,please try to work faster
+825,this system is stupid,this system has design issues
+826,why are you so slow,please try to work faster
+827,you're the worst teammate,we should cooperate better
+828,you clearly don't understand,you may want to review the topic
+829,this explanation is trash,this explanation needs improvement
+830,why are you so useless,you might need more help
+831,stop being dumb,please think more carefully
+832,you're wasting everyone's time,please focus on the task
+833,your idea is stupid,I disagree with your idea
+834,that was a dumb decision,that may not be the best decision
+835,this game is fucking trash,this game is not good
+836,this project is bullshit,this project has issues
+837,you're wasting everyone's time,please focus on the task
+838,you are so stupid,I think you are mistaken
+839,you clearly don't understand,you may want to review the topic
+840,this feature is dumb,this feature may need improvement
+841,you are so stupid,I think you are mistaken
+842,why are you so useless,you might need more help
+843,why are you so useless,you might need more help
+844,your work is garbage,this work needs improvement
+845,why are you so useless,you might need more help
+846,this is fucking terrible,this is very bad
+847,you are so stupid,I think you are mistaken
+848,your idea is stupid,I disagree with your idea
+849,you are so stupid,I think you are mistaken
+850,why are you so slow,please try to work faster
+851,what the hell are you doing,what are you doing
+852,your idea is stupid,I disagree with your idea
+853,this system is stupid,this system has design issues
+854,your work is garbage,this work needs improvement
+855,your idea is stupid,I disagree with your idea
+856,your idea is stupid,I disagree with your idea
+857,that was a dumb decision,that may not be the best decision
+858,this system is stupid,this system has design issues
+859,this feature is dumb,this feature may need improvement
+860,you're the worst teammate,we should cooperate better
+861,this project is bullshit,this project has issues
+862,this system is stupid,this system has design issues
+863,you're annoying as hell,you are being annoying
+864,why are you so slow,please try to work faster
+865,shut the fuck up,please be quiet
+866,this code is shit,this code has problems
+867,this code is shit,this code has problems
+868,you're wasting everyone's time,please focus on the task
+869,shut the fuck up,please be quiet
+870,what the hell are you doing,what are you doing
+871,this feature is dumb,this feature may need improvement
+872,what the hell are you doing,what are you doing
+873,why are you so useless,you might need more help
+874,you are so stupid,I think you are mistaken
+875,you are so stupid,I think you are mistaken
+876,why are you so slow,please try to work faster
+877,this system is stupid,this system has design issues
+878,this code is shit,this code has problems
+879,that was a dumb decision,that may not be the best decision
+880,this system is stupid,this system has design issues
+881,this code is shit,this code has problems
+882,this is fucking terrible,this is very bad
+883,you're annoying as hell,you are being annoying
+884,that was a dumb decision,that may not be the best decision
+885,you're wasting everyone's time,please focus on the task
+886,stop being dumb,please think more carefully
+887,what the hell are you doing,what are you doing
+888,stop being dumb,please think more carefully
+889,your work is garbage,this work needs improvement
+890,this code is shit,this code has problems
+891,you clearly don't understand,you may want to review the topic
+892,you clearly don't understand,you may want to review the topic
+893,why are you so useless,you might need more help
+894,this project is bullshit,this project has issues
+895,your idea is stupid,I disagree with your idea
+896,this explanation is trash,this explanation needs improvement
+897,stop being dumb,please think more carefully
+898,this code is shit,this code has problems
+899,this code is shit,this code has problems
+900,shut the fuck up,please be quiet
+901,your idea is stupid,I disagree with your idea
+902,this is fucking terrible,this is very bad
+903,you're annoying as hell,you are being annoying
+904,shut the fuck up,please be quiet
+905,this code is shit,this code has problems
+906,shut the fuck up,please be quiet
+907,this explanation is trash,this explanation needs improvement
+908,this feature is dumb,this feature may need improvement
+909,you're annoying as hell,you are being annoying
+910,you are so stupid,I think you are mistaken
+911,this system is stupid,this system has design issues
+912,your work is garbage,this work needs improvement
+913,this project is bullshit,this project has issues
+914,this system is stupid,this system has design issues
+915,you're annoying as hell,you are being annoying
+916,why are you so slow,please try to work faster
+917,this game is fucking trash,this game is not good
+918,you're the worst teammate,we should cooperate better
+919,this feature is dumb,this feature may need improvement
+920,this system is stupid,this system has design issues
+921,you're annoying as hell,you are being annoying
+922,you clearly don't understand,you may want to review the topic
+923,what the hell are you doing,what are you doing
+924,stop being dumb,please think more carefully
+925,this system is stupid,this system has design issues
+926,you're the worst teammate,we should cooperate better
+927,this project is bullshit,this project has issues
+928,stop being dumb,please think more carefully
+929,you're annoying as hell,you are being annoying
+930,why are you so useless,you might need more help
+931,this explanation is trash,this explanation needs improvement
+932,you are so stupid,I think you are mistaken
+933,this project is bullshit,this project has issues
+934,your idea is stupid,I disagree with your idea
+935,you're the worst teammate,we should cooperate better
+936,this is fucking terrible,this is very bad
+937,what the hell are you doing,what are you doing
+938,this explanation is trash,this explanation needs improvement
+939,why are you so slow,please try to work faster
+940,you are so stupid,I think you are mistaken
+941,this system is stupid,this system has design issues
+942,your idea is stupid,I disagree with your idea
+943,your idea is stupid,I disagree with your idea
+944,this explanation is trash,this explanation needs improvement
+945,this explanation is trash,this explanation needs improvement
+946,you clearly don't understand,you may want to review the topic
+947,shut the fuck up,please be quiet
+948,this is fucking terrible,this is very bad
+949,this feature is dumb,this feature may need improvement
+950,shut the fuck up,please be quiet
+951,why are you so slow,please try to work faster
+952,this code is shit,this code has problems
+953,this system is stupid,this system has design issues
+954,this code is shit,this code has problems
+955,you're the worst teammate,we should cooperate better
+956,your work is garbage,this work needs improvement
+957,this system is stupid,this system has design issues
+958,what the hell are you doing,what are you doing
+959,your idea is stupid,I disagree with your idea
+960,you clearly don't understand,you may want to review the topic
+961,this code is shit,this code has problems
+962,why are you so useless,you might need more help
+963,you're the worst teammate,we should cooperate better
+964,why are you so slow,please try to work faster
+965,why are you so useless,you might need more help
+966,you're annoying as hell,you are being annoying
+967,shut the fuck up,please be quiet
+968,you're annoying as hell,you are being annoying
+969,what the hell are you doing,what are you doing
+970,this is fucking terrible,this is very bad
+971,your idea is stupid,I disagree with your idea
+972,this feature is dumb,this feature may need improvement
+973,what the hell are you doing,what are you doing
+974,you're the worst teammate,we should cooperate better
+975,this explanation is trash,this explanation needs improvement
+976,your work is garbage,this work needs improvement
+977,you're wasting everyone's time,please focus on the task
+978,your idea is stupid,I disagree with your idea
+979,you're annoying as hell,you are being annoying
+980,that was a dumb decision,that may not be the best decision
+981,why are you so useless,you might need more help
+982,this project is bullshit,this project has issues
+983,you're the worst teammate,we should cooperate better
+984,stop being dumb,please think more carefully
+985,this game is fucking trash,this game is not good
+986,this feature is dumb,this feature may need improvement
+987,you clearly don't understand,you may want to review the topic
+988,this is fucking terrible,this is very bad
+989,you are so stupid,I think you are mistaken
+990,this feature is dumb,this feature may need improvement
+991,that was a dumb decision,that may not be the best decision
+992,what the hell are you doing,what are you doing
+993,this feature is dumb,this feature may need improvement
+994,this system is stupid,this system has design issues
+995,this is fucking terrible,this is very bad
+996,that was a dumb decision,that may not be the best decision
+997,stop being dumb,please think more carefully
+998,you're annoying as hell,you are being annoying
+999,you're the worst teammate,we should cooperate better
+1000,you are so stupid,I think you are mistaken

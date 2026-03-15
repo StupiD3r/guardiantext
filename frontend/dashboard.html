@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardianText – Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="page-header">
+    <span class="logo">Guardian<span>Text</span></span>
+    <span class="text-muted text-sm">📊 Message Log Dashboard</span>
+    <div class="ml-auto flex items-center gap-2">
+      <span id="header-username" class="text-sm text-muted"></span>
+      <a href="/chat.html" class="btn btn-ghost btn-sm">💬 Back to Chat</a>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="dash-layout">
+
+    <!-- Stats Row -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Messages</div><div class="stat-value" id="stat-total">–</div><div class="stat-sub">all time</div></div>
+      <div class="stat-card"><div class="stat-label">Filtered</div><div class="stat-value" id="stat-filtered" style="color:var(--warning)">–</div><div class="stat-sub">modified messages</div></div>
+      <div class="stat-card"><div class="stat-label">Blocked</div><div class="stat-value" id="stat-blocked" style="color:var(--danger)">–</div><div class="stat-sub">prevented</div></div>
+      <div class="stat-card"><div class="stat-label">Warnings</div><div class="stat-value" id="stat-warned" style="color:var(--warning)">–</div><div class="stat-sub">cleaned &amp; shown</div></div>
+      <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="stat-users">–</div><div class="stat-sub">registered</div></div>
+      <div class="stat-card"><div class="stat-label">Filter Rate</div><div class="stat-value" id="stat-rate">–</div><div class="stat-sub">% of messages</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-2" style="margin-bottom:1rem">
+      <button class="btn btn-primary btn-sm" id="btn-all" onclick="loadLogs(false)">All Logs</button>
+      <button class="btn btn-ghost btn-sm"   id="btn-mine" onclick="loadLogs(true)">My Logs</button>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Time</th>
+              <th>User</th>
+              <th>Original Message</th>
+              <th>Cleaned Version</th>
+              <th>Toxic Words</th>
+              <th>Score</th>
+              <th>Action</th>
+              <th>Suggestion</th>
+            </tr>
+          </thead>
+          <tbody id="logs-tbody">
+            <tr><td colspan="9" style="text-align:center;color:var(--text-dim);padding:2rem;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Offenders -->
+    <div class="card" style="margin-top:1.2rem">
+      <div style="font-weight:700; margin-bottom:.8rem">⚠️ Most Flagged Users</div>
+      <div id="top-offenders" style="display:flex;gap:.6rem;flex-wrap:wrap;"></div>
+    </div>
+
+    <!-- Admin: User overview & controls -->
+    <div class="card" id="admin-users-card" style="margin-top:1.2rem">
+      <div style="font-weight:700; margin-bottom:.8rem">🛡️ User Toxicity Overview (Admin)</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Incidents</th>
+              <th>Total Toxicity</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-users-body">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:1rem;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-muted" style="margin-top:.4rem">
+        Only visible to admin accounts. The default admin login is <code>admin</code> / <code>admin123</code> – please change it after first use.
+      </p>
+      <hr style="margin:1rem 0;opacity:.2;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">
+        <div style="font-weight:700;">🧹 Chat Management</div>
+        <button class="btn btn-danger btn-sm" onclick="clearAllChats()">Clear all chats &amp; logs</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Room</th>
+              <th>Message</th>
+              <th>Score</th>
+              <th>Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-messages-body">
+            <tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:1rem;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-muted" style="margin-top:.4rem">
+        Use the red button to wipe all stored messages and filter logs, or delete individual messages from the table.
+      </p>
+    </div>
+
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

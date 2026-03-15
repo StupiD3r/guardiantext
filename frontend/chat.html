@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardianText – Chat</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ── Page Header ── -->
+  <header class="page-header">
+    <span class="logo">Guardian<span>Text</span></span>
+    <span id="header-room" class="text-muted text-sm"># General</span>
+    <div class="ml-auto flex items-center gap-2">
+      <span id="header-username" class="text-sm text-muted"></span>
+      <a href="/dashboard" class="btn btn-ghost btn-sm">📊 Dashboard</a>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- ── Chat Layout ── -->
+  <div class="chat-layout">
+
+    <!-- Left Sidebar: Rooms -->
+    <aside class="sidebar">
+      <div class="sidebar-title">💬 Channels</div>
+      <div class="room-list" id="room-list">
+        <!-- populated by JS -->
+      </div>
+    </aside>
+
+    <!-- Main Chat -->
+    <main class="chat-main">
+      <div class="chat-topbar">
+        <span class="chat-room-name" id="topbar-room"># General</span>
+        <span class="online-badge" id="topbar-online">● 1 online</span>
+        <div class="ml-auto text-xs text-muted">GuardianText NLP Active 🛡️</div>
+      </div>
+
+      <div class="messages-area" id="messages-area">
+        <div style="text-align:center;color:var(--text-dim);margin-top:2rem;font-size:.85rem;">
+          🛡️ Messages in this channel are monitored for toxic language.<br>
+          Be respectful and kind to everyone!
+        </div>
+      </div>
+
+      <div class="typing-indicator" id="typing-indicator"></div>
+
+      <div class="chat-input-area">
+        <div class="filter-warning" id="filter-warning">
+          <strong>⚠️ Your last message was modified</strong>
+          <span id="filter-reason"></span>
+        </div>
+        <div class="suggestions-panel" id="suggestions-panel" style="display:none;">
+          <div class="suggestions-title">💡 Choose how to rephrase this message</div>
+          <div class="suggestions-body">
+            <div id="suggestions-original" class="suggestions-original"></div>
+            <div id="suggestions-options" class="suggestions-options"></div>
+          </div>
+          <div class="suggestions-actions">
+            <button class="btn btn-ghost btn-sm" id="suggestions-cancel-btn">Cancel</button>
+          </div>
+        </div>
+        <div class="input-row">
+          <textarea class="msg-textarea" id="msg-input"
+            placeholder="Type a message… (Enter to send, Shift+Enter for newline)"
+            rows="1"></textarea>
+          <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar: Online Users -->
+    <aside class="right-sidebar">
+      <div class="rs-title">Online Users</div>
+      <div id="online-users-list"></div>
+    </aside>
+
+  </div>
+
+  <div id="toast-container"></div>
+
+  <!-- Socket.IO from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>

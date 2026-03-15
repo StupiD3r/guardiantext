@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuardianText — System Diagrams</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #111827;
+    --card: #161d2e;
+    --border: #1e2d45;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --accent3: #34d399;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --danger: #f87171;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(56,189,248,0.08);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #e2e8f0 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Diagram grid */
+  .diagrams-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .diagram-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .diagram-card:hover {
+    border-color: rgba(56,189,248,0.3);
+    box-shadow: 0 0 40px rgba(56,189,248,0.06);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.015);
+  }
+
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .card-tag {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .tag-activity  { color: #34d399; border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.06); }
+  .tag-sequence  { color: #38bdf8; border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.06); }
+  .tag-dfd       { color: #f59e0b; border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.06); }
+  .tag-usecase   { color: #818cf8; border-color: rgba(129,140,248,0.3); background: rgba(129,140,248,0.06); }
+  .tag-state     { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.06); }
+  .tag-class     { color: #e879f9; border-color: rgba(232,121,249,0.3); background: rgba(232,121,249,0.06); }
+
+  .card-body {
+    padding: 32px 28px;
+    overflow-x: auto;
+  }
+
+  .mermaid {
+    display: flex;
+    justify-content: center;
+  }
+
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  footer span { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="badge">System Architecture Diagrams</div>
+    <h1>GuardianText</h1>
+    <p class="subtitle">Context-Aware Messaging Application for Toxic Language Filtering</p>
+  </header>
+
+  <div class="diagrams-grid">
+
+    <!-- 1. ACTIVITY DIAGRAM -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <span class="card-num">01</span>
+        <span class="card-title">Activity Diagram</span>
+        <span class="card-tag tag-activity">UML</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid">
+flowchart TD
+    A([🟢 Start]) --> B[User Opens GuardianText]
+    B --> C{Registered?}
+    C -- No --> D[Fill Registration Form]
+    D --> E[Validate Inputs]
+    E -- Invalid --> D
+    E -- Valid --> F[Create Account & Store in DB]
+    F --> G[Login Screen]
+    C -- Yes --> G
+    G --> H[Enter Credentials]
+    H --> I{Credentials Valid?}
+    I -- No --> J[Show Error Message]
+    J --> H
+    I -- Yes --> K[Load Chat Interface]
+    K --> L[Select Chat Room]
+    L --> M[Type Message]
+    M --> N[Click Send]
+    N --> O[NLP Filter Analyzes Message]
+    O --> P{Toxicity Score?}
+    P -- Below 0.01 → Clean --> Q[Message Sent to Recipient]
+    P -- 0.01–0.70 → Warned --> R[Display Polite Suggestion]
+    R --> S{User Choice?}
+    S -- Use Suggestion --> T[Send Cleaned Version]
+    S -- Edit Message --> M
+    S -- Send Anyway --> U[Mark as Warned in Log]
+    U --> Q
+    T --> Q
+    P -- Above 0.70 → Blocked --> V[Block Message]
+    V --> W[Notify User: Message Blocked]
+    W --> M
+    Q --> X[Log Message to Database]
+    X --> Y{Continue Chatting?}
+    Y -- Yes --> M
+    Y -- No --> Z([🔴 End Session])
+
+    style A fill:#34d399,color:#000,stroke:none
+    style Z fill:#f87171,color:#000,stroke:none
+    style P fill:#818cf8,color:#fff,stroke:none
+    style V fill:#f87171,color:#fff,stroke:none
+    style Q fill:#34d399,color:#000,stroke:none
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. SEQUENCE DIAGRAM -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <span class="card-num">02</span>
+        <span class="card-title">Sequence Diagram</span>
+        <span class="card-tag tag-sequence">UML</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid">
+sequenceDiagram
+    actor U as User
+    participant FE as Frontend (chat.html)
+    participant BE as Backend (app.py)
+    participant NLP as NLP Filter (nlp_filter.py)
+    participant DB as Database (database.py)
+    participant R as Recipient
+
+    Note over U,R: Registration & Login Flow
+    U->>FE: Open application
+    U->>FE: Submit login credentials
+    FE->>BE: POST /api/login {username, password}
+    BE->>DB: Query user record
+    DB-->>BE: Return user data
+    BE-->>FE: 200 OK + session cookie
+    FE-->>U: Load chat interface
+
+    Note over U,R: Message Send Flow
+    U->>FE: Type message & click Send
+    FE->>BE: socket.emit('send_message', {text, room})
+    BE->>NLP: analyze(message_text)
+    NLP->>NLP: normalize → expand slang → detect toxic words
+    NLP->>NLP: TF-IDF vectorize → LogisticRegression predict
+    NLP-->>BE: FilterResult {score, action, suggestion, cleaned}
+
+    alt action == "allowed" (score < 0.01)
+        BE->>DB: save_message(original, score, action=allowed)
+        BE->>R: socket.emit('new_message', {text, sender})
+        BE-->>FE: Delivery confirmed
+    else action == "warned" (0.01 ≤ score < 0.70)
+        BE-->>FE: Return suggestion + cleaned version
+        FE-->>U: Show suggestion modal
+        U->>FE: Choose: send suggestion / edit / send anyway
+        FE->>BE: socket.emit('send_message', {chosen_text})
+        BE->>DB: save_message(original, cleaned, score, action=warned)
+        BE->>R: socket.emit('new_message', {cleaned_text})
+    else action == "blocked" (score ≥ 0.70)
+        BE-->>FE: Return blocked status
+        FE-->>U: Display block notification
+        BE->>DB: log_filtered_message(original, score, action=blocked)
+    end
+
+    Note over U,R: Admin Monitoring Flow
+    BE->>DB: update_user_toxicity_stats(user_id)
+    DB-->>BE: Aggregated stats
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. DATA FLOW DIAGRAM -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <span class="card-num">03</span>
+        <span class="card-title">Data Flow Diagram</span>
+        <span class="card-tag tag-dfd">DFD</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid">
+flowchart LR
+    subgraph EXTERNAL["External Entities"]
+        U1(["👤 Sender"])
+        U2(["👤 Recipient"])
+        ADM(["🛡️ Admin"])
+    end
+
+    subgraph PROCESSES["Core Processes"]
+        P1["1.0\nUser Auth\nProcess"]
+        P2["2.0\nMessage Input\nProcess"]
+        P3["3.0\nNLP Toxicity\nFilter"]
+        P4["4.0\nMessage\nDelivery"]
+        P5["5.0\nLog &\nAnalytics"]
+        P6["6.0\nAdmin\nControl"]
+    end
+
+    subgraph STORES["Data Stores"]
+        DS1[("D1: Users")]
+        DS2[("D2: Messages")]
+        DS3[("D3: Filter Logs")]
+        DS4[("D4: Chat Rooms")]
+    end
+
+    U1 -->|Credentials| P1
+    P1 <-->|Verify / Store User| DS1
+    P1 -->|Session Token| U1
+
+    U1 -->|Raw Message Text| P2
+    P2 -->|Raw Text| P3
+    P3 -->|Score, Action, Suggestion| P2
+    P2 -->|Suggestion / Block Notice| U1
+    P2 -->|Approved Message| P4
+    P4 -->|Delivered Message| U2
+    P4 <-->|Read / Write Messages| DS2
+    P4 <-->|Room Info| DS4
+
+    P3 -->|Filter Result Record| P5
+    P5 <-->|Read / Write Logs| DS3
+    P5 <-->|Read Messages| DS2
+    P5 -->|Stats & Reports| ADM
+
+    ADM -->|Ban / Unban / Delete| P6
+    P6 <-->|Manage Users| DS1
+    P6 <-->|Delete Messages / Logs| DS2
+    P6 <-->|Clear Logs| DS3
+
+    style P3 fill:#818cf8,color:#fff,stroke:none
+    style EXTERNAL fill:#0f172a,stroke:#1e2d45,color:#e2e8f0
+    style PROCESSES fill:#0f172a,stroke:#1e2d45,color:#e2e8f0
+    style STORES fill:#0f172a,stroke:#1e2d45,color:#e2e8f0
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. USE CASE DIAGRAM -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <span class="card-num">04</span>
+        <span class="card-title">Use Case Diagram</span>
+        <span class="card-tag tag-usecase">UML</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid">
+flowchart LR
+    subgraph SYSTEM["⬛  GuardianText System"]
+        direction TB
+        UC1("Register Account")
+        UC2("Login / Logout")
+        UC3("Send Message")
+        UC4("Receive Message")
+        UC5("View Suggestion &\nRephrase Message")
+        UC6("View Chat History")
+        UC7("View Personal\nFilter Report")
+        UC8("Manage Users\n(Ban / Unban)")
+        UC9("View Dashboard\n& Analytics")
+        UC10("Delete Messages\n/ Clear Logs")
+        UC11("Reset User Password")
+        UC12("Select Chat Room")
+
+        UC3 -.->|«include»| UC5
+        UC3 -.->|«include»| UC12
+        UC9 -.->|«extend»| UC10
+        UC9 -.->|«extend»| UC11
+    end
+
+    RUSER(["👤\nRegistered\nUser"])
+    ADMIN(["🛡️\nAdmin"])
+    NLP(["🤖\nNLP Filter\n(System)"])
+
+    RUSER --- UC1
+    RUSER --- UC2
+    RUSER --- UC3
+    RUSER --- UC4
+    RUSER --- UC5
+    RUSER --- UC6
+    RUSER --- UC7
+
+    ADMIN --- UC2
+    ADMIN --- UC8
+    ADMIN --- UC9
+    ADMIN --- UC10
+    ADMIN --- UC11
+
+    NLP --- UC3
+    NLP --- UC5
+
+    style SYSTEM fill:#0d1525,stroke:#38bdf8,stroke-width:1.5px,color:#e2e8f0
+    style RUSER fill:#1e3a5f,color:#e2e8f0,stroke:#38bdf8
+    style ADMIN fill:#2d1b4e,color:#e2e8f0,stroke:#818cf8
+    style NLP fill:#1a3a2a,color:#e2e8f0,stroke:#34d399
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. STATE CHART DIAGRAM -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <span class="card-num">05</span>
+        <span class="card-title">State Chart Diagram</span>
+        <span class="card-tag tag-state">UML</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid">
+stateDiagram-v2
+    [*] --> Idle : App opened & user logged in
+
+    Idle --> Composing : User starts typing
+    Composing --> Idle : User clears message
+
+    Composing --> Analyzing : User clicks Send
+
+    state Analyzing {
+        [*] --> Normalizing : Raw text received
+        Normalizing --> SlangExpansion : Lowercase & de-leet done
+        SlangExpansion --> ToxicWordDetection : Abbreviations expanded
+        ToxicWordDetection --> MLClassification : Keyword scan complete
+        MLClassification --> [*] : Score computed
+    }
+
+    Analyzing --> Allowed : Score < 0.01 (Clean)
+    Analyzing --> Warned : 0.01 ≤ Score < 0.70
+    Analyzing --> Blocked : Score ≥ 0.70
+
+    Allowed --> Delivered : Message sent to recipient
+    Delivered --> Logged : Saved in DB
+    Logged --> Idle : Ready for next message
+
+    Warned --> SuggestionShown : Polite rephrase displayed
+    SuggestionShown --> UseSuggestion : User accepts suggestion
+    SuggestionShown --> EditMessage : User chooses to edit
+    SuggestionShown --> SendAnyway : User overrides warning
+    UseSuggestion --> Delivered
+    SendAnyway --> Delivered
+    EditMessage --> Composing
+
+    Blocked --> BlockNotified : User sees block alert
+    BlockNotified --> Composing : User rewrites message
+
+    state Delivered {
+        [*] --> InTransit
+        InTransit --> ReceivedByClient : Socket.IO push
+        ReceivedByClient --> [*]
+    }
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CLASS DIAGRAM -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <span class="card-num">06</span>
+        <span class="card-title">Class Diagram</span>
+        <span class="card-tag tag-class">UML</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid">
+classDiagram
+    class User {
+        +int id
+        +String username
+        +String email
+        +String password_hash
+        +String role
+        +bool is_banned
+        +DateTime created_at
+        +int total_messages_sent
+        +int total_filtered
+        +float avg_toxicity_score
+        +register() bool
+        +login(password) bool
+        +logout() void
+        +get_filter_history() List
+        +get_stats() Dict
+    }
+
+    class Message {
+        +int id
+        +int sender_id
+        +int room_id
+        +String original_text
+        +String displayed_text
+        +float toxicity_score
+        +String action
+        +DateTime timestamp
+        +bool is_deleted
+        +send() bool
+        +delete() void
+        +get_filter_log() FilterLog
+    }
+
+    class ChatRoom {
+        +int id
+        +String name
+        +String description
+        +DateTime created_at
+        +List~User~ members
+        +List~Message~ messages
+        +add_member(user) void
+        +remove_member(user) void
+        +get_history(limit) List
+    }
+
+    class NLPFilter {
+        +TfidfVectorizer vectorizer
+        +LogisticRegression model
+        +Dict toxic_word_dict
+        +Dict slang_map
+        +float toxicity_threshold
+        +float block_threshold
+        +analyze(text) FilterResult
+        +normalize(text) String
+        +expand_slang(text) String
+        +detect_toxic_words(text) List
+        +build_suggestion(text) String
+        +classify(text) float
+    }
+
+    class FilterResult {
+        +String original_text
+        +String cleaned_text
+        +String suggestion
+        +float score
+        +String action
+        +List~String~ toxic_words_found
+        +bool is_blocked
+        +bool is_warned
+        +bool is_allowed
+        +to_dict() Dict
+    }
+
+    class FilterLog {
+        +int id
+        +int message_id
+        +int user_id
+        +String original_text
+        +String cleaned_text
+        +float score
+        +String action
+        +List toxic_words
+        +DateTime logged_at
+        +save() void
+        +get_by_user(user_id) List
+    }
+
+    class AdminController {
+        +ban_user(user_id) bool
+        +unban_user(user_id) bool
+        +delete_message(msg_id) bool
+        +reset_password(user_id) bool
+        +clear_all_logs() void
+        +get_dashboard_stats() Dict
+        +get_top_offenders(limit) List
+    }
+
+    class Config {
+        +String HOST
+        +int PORT
+        +bool DEBUG
+        +float TOXICITY_THRESHOLD
+        +float BLOCK_THRESHOLD
+        +String DB_PATH
+        +String SECRET_KEY
+    }
+
+    User "1" --> "many" Message : sends
+    User "many" --> "many" ChatRoom : joins
+    ChatRoom "1" --> "many" Message : contains
+    Message "1" --> "1" FilterLog : generates
+    NLPFilter --> FilterResult : returns
+    NLPFilter ..> Message : analyzes
+    FilterLog --> "1" User : belongs to
+    AdminController --> User : manages
+    AdminController --> Message : manages
+    AdminController --> FilterLog : manages
+    NLPFilter --> Config : reads thresholds
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end diagrams-grid -->
+
+  <footer>
+    <p>GuardianText · Notre Dame of Marbel University · BS Information Technology · <span>August 2025</span></p>
+    <p style="margin-top:8px; opacity:0.5;">Grecia · Laga · Posadas &nbsp;|&nbsp; Adviser: Merch Jay P. Dollaga, MIT</p>
+  </footer>
+
+</div><!-- end page-wrap -->
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#161d2e',
+      primaryColor: '#1e3a5f',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#38bdf8',
+      lineColor: '#38bdf8',
+      secondaryColor: '#2d1b4e',
+      tertiaryColor: '#1a3a2a',
+      noteBkgColor: '#1e2d45',
+      noteTextColor: '#e2e8f0',
+      activationBkgColor: '#1e3a5f',
+      activationBorderColor: '#38bdf8',
+      sequenceNumberColor: '#38bdf8',
+      actorBkg: '#1e3a5f',
+      actorBorder: '#38bdf8',
+      actorTextColor: '#e2e8f0',
+      actorLineColor: '#38bdf8',
+      signalColor: '#e2e8f0',
+      signalTextColor: '#e2e8f0',
+      labelBoxBkgColor: '#111827',
+      labelBoxBorderColor: '#38bdf8',
+      labelTextColor: '#e2e8f0',
+      loopTextColor: '#e2e8f0',
+      classText: '#e2e8f0',
+      fillType0: '#1e3a5f',
+      fillType1: '#2d1b4e',
+      fillType2: '#1a3a2a',
+      fillType3: '#3a2a0d',
+      fillType4: '#3a1a1a',
+    },
+    flowchart: { curve: 'basis', useMaxWidth: true },
+    sequence: { useMaxWidth: true, wrap: true, width: 180 },
+    stateDiagram: { useMaxWidth: true },
+    classDiagram: { useMaxWidth: true },
+    securityLevel: 'loose',
+  });
+</script>
+</body>
+</html>

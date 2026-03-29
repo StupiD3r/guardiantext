@@ -27,7 +27,7 @@ from database import (init_db, create_user, verify_user, save_message,
                       set_user_password, get_recent_messages,
                       delete_message, clear_all_messages)
 from auth import validate_username, validate_password, login_required, get_current_user
-from nlp_filter import analyze_message
+from nlp_filter import analyze_message, FilterResult
 from learning_suggestions import generate_ml_suggestions, learn_from_user_choice
 from enhanced_ml_system import detect_enhanced_context, get_enhanced_context_suggestions
 
@@ -416,35 +416,100 @@ def on_message(data):
         )
         return
 
-    # ── NLP Analysis ──────────────────────────────────────────────────────────
-    result = analyze_message(
-        text,
-        block_threshold=Config.BLOCK_THRESHOLD,
-        warn_threshold=Config.TOXICITY_THRESHOLD,
-    )
+    # ── True ML Toxicity Analysis ───────────────────────────────────────────────────
+    # Use True ML system for intelligent toxicity detection
+    try:
+        from true_ml_toxicity import analyze_with_true_ml
+        ml_result = analyze_with_true_ml(text)
+        
+        # Convert True ML result to expected format
+        result = FilterResult(
+            is_toxic=ml_result.is_toxic,
+            toxicity_score=ml_result.toxicity_score,
+            severity=0 if ml_result.severity == 'mild' else 1 if ml_result.severity == 'moderate' else 2,
+            toxic_words=[tw.word for tw in ml_result.toxic_words],
+            cleaned_message=ml_result.clean_suggestion,
+            suggestion=ml_result.clean_suggestion,
+            action='blocked' if ml_result.toxicity_score > 0.7 else 'warned' if ml_result.toxicity_score > 0.3 else 'allowed',
+            original_message=text
+        )
+    except Exception as e:
+        print(f"True ML error: {e}, falling back to legacy system")
+        # Fallback to legacy NLP analysis
+        result = analyze_message(
+            text,
+            block_threshold=Config.BLOCK_THRESHOLD,
+            warn_threshold=Config.TOXICITY_THRESHOLD,
+        )
 
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
+    # Extract toxic words using True ML system for better accuracy
+    toxic_words_for_filtering = []
+    try:
+        from true_ml_toxicity import analyze_with_true_ml
+        ml_analysis = analyze_with_true_ml(text)
+        toxic_words_for_filtering = [tw.word for tw in ml_analysis.toxic_words]
+    except:
+        # Fallback to original result if True ML fails
+        toxic_words_for_filtering = result.toxic_words
+
     # If message is toxic (warned or blocked) AND has toxic words, do not send immediately.
     # Instead, send enhanced ML-generated suggestions back to the sender.
-    if result.action in ("warned", "blocked") and result.toxic_words:
+    if result.action in ("warned", "blocked") and toxic_words_for_filtering:
         # Generate enhanced ML-based suggestions
         user_id = session.get('user_id')
         
-        # Generate filtered version (toxic words removed)
-        filtered_version = _create_filtered_version(text, result.toxic_words)
+        # Generate filtered version (toxic words removed) using True ML words
+        filtered_version = _create_filtered_version(text, toxic_words_for_filtering)
         
-        # Get ML-generated suggestions for options 2 and 3
+        # Get ML-generated suggestions for options 2 and 3 using True ML system
         ml_suggestions = []
         try:
-            # Try enhanced retrieval first (prioritizes exact training matches)
-            from enhanced_ml_retrieval import enhanced_generate_ml_suggestions
-            ml_suggestions = enhanced_generate_ml_suggestions(user_id or 0, text, result.toxic_words)
+            # Use True ML system to generate intelligent suggestions
+            from true_ml_toxicity import analyze_with_true_ml
+            
+            # Get True ML analysis for better understanding
+            ml_result = analyze_with_true_ml(text)
+            
+            # Extract toxic words from True ML result
+            true_toxic_words = [tw.word for tw in ml_result.toxic_words]
+            
+            # Generate suggestions based on True ML clean suggestion and trained data
+            if ml_result.clean_suggestion and ml_result.clean_suggestion != text:
+                # Use True ML's clean suggestion as primary option
+                ml_suggestions.append({
+                    "text": ml_result.clean_suggestion,
+                    "type": "true_ml_clean",
+                    "confidence": ml_result.confidence
+                })
+            
+            # Try to get additional suggestions from trained ML data
+            try:
+                from enhanced_ml_system import get_enhanced_context_suggestions, detect_enhanced_context
+                context = detect_enhanced_context(text, true_toxic_words)
+                enhanced_suggestions = get_enhanced_context_suggestions(context, text)
+                
+                for sugg in enhanced_suggestions[:2]:  # Get up to 2 more
+                    if sugg and sugg != ml_result.clean_suggestion:
+                        ml_suggestions.append({
+                            "text": sugg,
+                            "type": "enhanced_context",
+                            "confidence": 0.8
+                        })
+            except Exception as e:
+                print(f"Enhanced ML error: {e}")
+                
         except Exception as e:
-            print(f"Enhanced ML error: {e}")
+            print(f"True ML error: {e}")
             # Fallback to original ML system
             try:
-                ml_suggestions = generate_ml_suggestions(user_id or 0, text, result.toxic_words)
+                ml_suggestions = generate_ml_suggestions(user_id or 0, text, toxic_words_for_filtering)
+                # Convert to new format
+                if isinstance(ml_suggestions, list):
+                    ml_suggestions = [{"text": s, "type": "fallback", "confidence": 0.6} for s in ml_suggestions]
+                else:
+                    ml_suggestions = []
             except Exception as e2:
                 print(f"Original ML error: {e2}")
                 ml_suggestions = []
@@ -452,7 +517,7 @@ def on_message(data):
         # If we don't have enough ML suggestions, use enhanced ML as backup
         if len(ml_suggestions) < 2:
             try:
-                enhanced_context = detect_enhanced_context(text, result.toxic_words)
+                enhanced_context = detect_enhanced_context(text, toxic_words_for_filtering)
                 enhanced_suggestions = get_enhanced_context_suggestions(enhanced_context, text)
                 # Convert enhanced suggestions to the expected format
                 for sugg in enhanced_suggestions:
@@ -534,7 +599,7 @@ def on_message(data):
                 "room": room,
                 "original_message": text,
                 "toxicity_score": result.toxicity_score,
-                "toxic_words": result.toxic_words,
+                "toxic_words": toxic_words_for_filtering,  # Use True ML detected words
                 "severity": result.severity,
                 "suggestion_text": result.suggestion,
                 "decision": result.action,

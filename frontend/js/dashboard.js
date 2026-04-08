@@ -38,6 +38,14 @@ function formatTime(ts) {
 async function loadStats() {
   try {
     const res  = await fetch('/api/dashboard/stats');
+    if (!res.ok) {
+      console.error('Stats API error:', res.status, res.statusText);
+      if (res.status === 401) {
+        window.location.href = '/';
+        return;
+      }
+      return;
+    }
     const data = await res.json();
 
     document.getElementById('stat-total').textContent    = data.total_messages ?? '—';
@@ -70,7 +78,7 @@ async function loadStats() {
 async function loadUsersAdmin() {
   const container = document.getElementById('admin-users-body');
   if (!container) return;
-  container.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:1rem;">Loading users…</td></tr>';
+  container.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:1rem;">Loading users…</td></tr>';
 
   try {
     const res = await fetch('/api/admin/users');
@@ -79,10 +87,17 @@ async function loadUsersAdmin() {
       document.getElementById('admin-users-card').style.display = 'none';
       return;
     }
+    if (res.status === 401) {
+      window.location.href = '/';
+      return;
+    }
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
     const data = await res.json();
     const users = data.users || [];
     if (!users.length) {
-      container.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:1rem;">No users yet.</td></tr>';
+      container.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:1rem;">No users yet.</td></tr>';
       return;
     }
     container.innerHTML = users.map((u, idx) => `
@@ -98,10 +113,13 @@ async function loadUsersAdmin() {
             ${u.is_banned ? 'Unban' : 'Ban'}
           </button>
         </td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id}, '${escapeHtml(u.username)}')">Delete</button>
+        </td>
       </tr>
     `).join('');
   } catch (e) {
-    container.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--danger);padding:1rem;">Error loading users: ${e.message}</td></tr>`;
+    container.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:1rem;">Error loading users: ${e.message}</td></tr>`;
   }
 }
 
@@ -124,6 +142,27 @@ async function toggleBanUser(userId, banned) {
   }
 }
 
+async function deleteUser(userId, username) {
+  if (!confirm(`Are you sure you want to permanently delete user "${username}" and all their data?`)) return;
+  
+  try {
+    const res = await fetch(`/api/admin/users/${userId}/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      showToast('Error', data.error || 'Failed to delete user.', 'danger');
+      return;
+    }
+    showToast('Success', `User "${username}" has been deleted.`, 'success');
+    loadUsersAdmin();
+    loadStats();
+  } catch (e) {
+    showToast('Error', e.message, 'danger');
+  }
+}
+
 // ── Admin: message list & clear/delete ─────────────────────────────────────────
 async function loadAdminMessages() {
   const tbody = document.getElementById('admin-messages-body');
@@ -137,6 +176,13 @@ async function loadAdminMessages() {
       const card = document.getElementById('admin-users-card');
       if (card) card.style.display = 'none';
       return;
+    }
+    if (res.status === 401) {
+      window.location.href = '/';
+      return;
+    }
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
     }
     const data = await res.json();
     const messages = data.messages || [];
@@ -209,6 +255,13 @@ async function loadLogs(mineOnly = false) {
   try {
     const url  = mineOnly ? '/api/dashboard/logs?mine=true' : '/api/dashboard/logs';
     const res  = await fetch(url);
+    if (!res.ok) {
+      if (res.status === 401) {
+        window.location.href = '/';
+        return;
+      }
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
     const data = await res.json();
 
     if (!data.logs || data.logs.length === 0) {
@@ -242,18 +295,28 @@ async function logout() {
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 async function init() {
-  const meRes  = await fetch('/api/me');
-  const meData = await meRes.json();
-  if (!meData.logged_in) { window.location.href = '/'; return; }
-  document.getElementById('header-username').textContent = `👤 ${meData.username}`;
+  try {
+    const meRes  = await fetch('/api/me');
+    if (!meRes.ok) {
+      console.error('Me API error:', meRes.status);
+      window.location.href = '/';
+      return;
+    }
+    const meData = await meRes.json();
+    if (!meData.logged_in) { window.location.href = '/'; return; }
+    document.getElementById('header-username').textContent = `👤 ${meData.username}`;
 
-  await loadStats();
-  await loadLogs(false);
-  await loadUsersAdmin();
-  await loadAdminMessages();
+    await loadStats();
+    await loadLogs(false);
+    await loadUsersAdmin();
+    await loadAdminMessages();
 
-  // Auto-refresh every 30s
-  setInterval(() => { loadStats(); loadLogs(false); }, 30000);
+    // Auto-refresh every 30s
+    setInterval(() => { loadStats(); loadLogs(false); }, 30000);
+  } catch (e) {
+    console.error('Dashboard init error:', e);
+    showToast('Error', 'Failed to load dashboard: ' + e.message, 'danger');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);

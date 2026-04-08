@@ -25,7 +25,17 @@ from database import (init_db, create_user, verify_user, save_message,
                       get_user_by_id, ensure_default_admin,
                       set_user_banned, get_user_toxicity_overview,
                       set_user_password, get_recent_messages,
-                      delete_message, clear_all_messages)
+                      delete_message, clear_all_messages, delete_user,
+                      send_friend_request, accept_friend_request, 
+                      decline_friend_request, remove_friend,
+                      get_friends_list, get_friend_requests,
+                      get_friendship_status, search_users,
+                      create_private_room, get_user_private_rooms,
+                      get_all_accessible_rooms, get_room_members,
+                      add_room_member, remove_room_member,
+                      user_has_room_access, invite_friend_to_room,
+                      get_room_invitations, accept_room_invitation,
+                      decline_room_invitation, user_has_room_access_by_name)
 from auth import validate_username, validate_password, login_required, get_current_user
 from nlp_filter import analyze_message, FilterResult
 from learning_suggestions import generate_ml_suggestions, learn_from_user_choice
@@ -238,10 +248,9 @@ def me():
 @app.route('/api/rooms')
 @login_required
 def get_rooms():
-    conn = get_db()
-    rows = conn.execute("SELECT name FROM rooms ORDER BY name").fetchall()
-    conn.close()
-    return jsonify({"rooms": [r['name'] for r in rows]})
+    user = get_current_user()
+    rooms = get_all_accessible_rooms(user['id'])
+    return jsonify({"rooms": rooms})
 
 @app.route('/api/messages/<room>')
 @login_required
@@ -308,6 +317,23 @@ def admin_reset_password(user_id: int):
     return jsonify({"success": True})
 
 
+@app.route("/api/admin/users/<int:user_id>/delete", methods=["POST"])
+@login_required
+def admin_delete_user(user_id: int):
+    if not session.get("is_admin"):
+        return jsonify({"error": "Admin privileges required"}), 403
+    
+    # Prevent deleting self
+    if session.get("user_id") == user_id:
+        return jsonify({"error": "You cannot delete your own account."}), 400
+    
+    success, message = delete_user(user_id)
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"error": message}), 400
+
+
 @app.route("/api/admin/messages", methods=["GET", "DELETE"])
 @login_required
 def admin_messages():
@@ -329,6 +355,227 @@ def admin_delete_message(message_id: int):
     delete_message(message_id)
     return jsonify({"success": True, "message_id": message_id})
 
+# ---- Friends API ----
+
+@app.route('/api/friends/search', methods=['GET'])
+@login_required
+def search_friends():
+    query = request.args.get('q', '').strip()
+    if not query:
+        return jsonify({"users": []})
+    
+    user = get_current_user()
+    users = search_users(query, user['id'])
+    return jsonify({"users": users})
+
+@app.route('/api/friends/request', methods=['POST'])
+@login_required
+def send_friend_request_api():
+    data = request.get_json()
+    friend_username = data.get('username', '').strip()
+    
+    if not friend_username:
+        return jsonify({"success": False, "message": "Username is required"}), 400
+    
+    user = get_current_user()
+    print(f"[DEBUG] User {user['username']} sending friend request to {friend_username}")
+    
+    success, message, friend_id = send_friend_request(user['id'], friend_username)
+    
+    if success:
+        print(f"[DEBUG] Friend request successful, friend_id: {friend_id}")
+        # Send real-time notification to the recipient
+        if friend_id:
+            print(f"[DEBUG] Sending notification to room user_{friend_id}")
+            socketio.emit('friend_request_received', {
+                'sender_id': user['id'],
+                'sender_username': user['username'],
+                'message': f"{user['username']} sent you a friend request!"
+            }, room=f"user_{friend_id}")
+        
+        return jsonify({"success": True, "message": message})
+    else:
+        print(f"[DEBUG] Friend request failed: {message}")
+        return jsonify({"success": False, "message": message}), 400
+
+@app.route('/api/friends/accept', methods=['POST'])
+@login_required
+def accept_friend_request_api():
+    data = request.get_json()
+    requester_id = data.get('requester_id')
+    
+    if not requester_id:
+        return jsonify({"success": False, "message": "Requester ID is required"}), 400
+    
+    user = get_current_user()
+    success, message = accept_friend_request(user['id'], requester_id)
+    
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+@app.route('/api/friends/decline', methods=['POST'])
+@login_required
+def decline_friend_request_api():
+    data = request.get_json()
+    requester_id = data.get('requester_id')
+    
+    if not requester_id:
+        return jsonify({"success": False, "message": "Requester ID is required"}), 400
+    
+    user = get_current_user()
+    success, message = decline_friend_request(user['id'], requester_id)
+    
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+@app.route('/api/friends/remove', methods=['POST'])
+@login_required
+def remove_friend_api():
+    data = request.get_json()
+    friend_id = data.get('friend_id')
+    
+    if not friend_id:
+        return jsonify({"success": False, "message": "Friend ID is required"}), 400
+    
+    user = get_current_user()
+    success, message = remove_friend(user['id'], friend_id)
+    
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+@app.route('/api/friends')
+@login_required
+def get_friends():
+    user = get_current_user()
+    friends = get_friends_list(user['id'])
+    return jsonify({"friends": friends})
+
+@app.route('/api/friends/requests')
+@login_required
+def get_friend_requests_api():
+    user = get_current_user()
+    print(f"[DEBUG] Getting friend requests for user {user['username']} (ID: {user['id']})")
+    requests = get_friend_requests(user['id'])
+    print(f"[DEBUG] Friend requests data: {requests}")
+    return jsonify(requests)
+
+@app.route('/api/friends/status/<int:other_user_id>')
+@login_required
+def get_friendship_status_api(other_user_id):
+    user = get_current_user()
+    status = get_friendship_status(user['id'], other_user_id)
+    return jsonify({"status": status})
+
+# ---- Private Rooms API ----
+
+@app.route('/api/rooms/create', methods=['POST'])
+@login_required
+def create_room_api():
+    data = request.get_json()
+    room_name = (data.get('name') or '').strip()
+    
+    if not room_name:
+        return jsonify({"success": False, "message": "Room name is required"}), 400
+    
+    if len(room_name) < 3 or len(room_name) > 50:
+        return jsonify({"success": False, "message": "Room name must be 3-50 characters"}), 400
+    
+    user = get_current_user()
+    success, message, room_id = create_private_room(room_name, user['id'])
+    
+    if success:
+        return jsonify({"success": True, "message": message, "room_id": room_id, "room_name": room_name})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+
+@app.route('/api/rooms/private')
+@login_required
+def get_private_rooms_api():
+    user = get_current_user()
+    rooms = get_user_private_rooms(user['id'])
+    return jsonify({"rooms": rooms})
+
+
+@app.route('/api/rooms/<int:room_id>/members')
+@login_required
+def get_room_members_api(room_id):
+    user = get_current_user()
+    
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    members = get_room_members(room_id)
+    return jsonify({"members": members})
+
+
+@app.route('/api/rooms/<int:room_id>/invite', methods=['POST'])
+@login_required
+def invite_to_room_api(room_id):
+    data = request.get_json()
+    friend_id = data.get('friend_id')
+    
+    if not friend_id:
+        return jsonify({"success": False, "message": "Friend ID is required"}), 400
+    
+    user = get_current_user()
+    
+    # Check if user has access to the room
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    success, message = invite_friend_to_room(room_id, friend_id, user['id'])
+    
+    if success:
+        # Send real-time notification to the friend
+        socketio.emit('room_invitation_received', {
+            'room_id': room_id,
+            'inviter_username': user['username'],
+            'message': f"{user['username']} invited you to a private room!"
+        }, room=f"user_{friend_id}")
+        
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+
+@app.route('/api/rooms/invitations')
+@login_required
+def get_room_invitations_api():
+    user = get_current_user()
+    invitations = get_room_invitations(user['id'])
+    return jsonify({"invitations": invitations})
+
+
+@app.route('/api/rooms/invitations/<int:invitation_id>/accept', methods=['POST'])
+@login_required
+def accept_room_invitation_api(invitation_id):
+    user = get_current_user()
+    success, message = accept_room_invitation(invitation_id, user['id'])
+    
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+
+@app.route('/api/rooms/invitations/<int:invitation_id>/decline', methods=['POST'])
+@login_required
+def decline_room_invitation_api(invitation_id):
+    user = get_current_user()
+    success, message = decline_room_invitation(invitation_id, user['id'])
+    
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
 # ── Socket.IO events ──────────────────────────────────────────────────────────
 
 @socketio.on('connect')
@@ -337,6 +584,9 @@ def on_connect():
     if not user:
         return False   # Reject unauthenticated socket connections
     print(f"[WS] {user['username']} connected  sid={request.sid}")
+    
+    # Join user-specific room for friend notifications
+    join_room(f"user_{user['id']}")
 
 @socketio.on('disconnect')
 def on_disconnect():
@@ -403,6 +653,13 @@ def on_message(data):
     text     = (data.get('message') or '').strip()
 
     if not username or not text:
+        return
+
+    # Check if user has access to the room
+    if not user_has_room_access_by_name(room, user_id):
+        emit('error', {
+            'message': 'You do not have access to this room.'
+        })
         return
 
     # Block banned users from sending any messages

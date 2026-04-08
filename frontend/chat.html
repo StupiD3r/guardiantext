@@ -25,8 +25,13 @@
     <!-- Left Sidebar: Rooms -->
     <aside class="sidebar">
       <div class="sidebar-title">💬 Channels</div>
+      <button class="btn btn-primary btn-sm" onclick="showCreateRoomModal()" style="width: 100%; margin-bottom: 1rem;">➕ New Private Room</button>
       <div class="room-list" id="room-list">
         <!-- populated by JS -->
+      </div>
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+        <div class="sidebar-title" style="font-size: 0.85rem;">📬 Room Invitations</div>
+        <div id="room-invitations-list" class="text-xs"></div>
       </div>
     </aside>
 
@@ -71,12 +76,61 @@
       </div>
     </main>
 
-    <!-- Right Sidebar: Online Users -->
+    <!-- Right Sidebar: Friends & Online Users -->
     <aside class="right-sidebar">
-      <div class="rs-title">Online Users</div>
-      <div id="online-users-list"></div>
+      <div class="rs-section">
+        <div class="rs-title">Friends</div>
+        <div class="friend-search">
+          <input type="text" id="friend-search-input" placeholder="Search users..." class="friend-search-input">
+          <button id="friend-search-btn" class="btn btn-ghost btn-xs">Search</button>
+        </div>
+        <div class="friend-tabs">
+          <button class="friend-tab active" data-tab="friends">Friends</button>
+          <button class="friend-tab" data-tab="requests">Requests</button>
+        </div>
+        <div id="friends-list" class="friends-panel active"></div>
+        <div id="friend-requests" class="friends-panel"></div>
+      </div>
+      <div class="rs-section">
+        <div class="rs-title">Online Users</div>
+        <div id="online-users-list"></div>
+      </div>
     </aside>
 
+  </div>
+
+  <!-- Create Room Modal -->
+  <div id="create-room-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Create Private Room</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeCreateRoomModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="new-room-name" placeholder="Room name..." class="form-input" maxlength="50">
+        <small class="text-muted">3-50 characters</small>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeCreateRoomModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="createPrivateRoom()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invite Friends Modal -->
+  <div id="invite-friends-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Invite Friends to Room</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeInviteFriendsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="invite-friends-list" class="friends-select-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeInviteFriendsModal()">Close</button>
+      </div>
+    </div>
   </div>
 
   <div id="toast-container"></div>

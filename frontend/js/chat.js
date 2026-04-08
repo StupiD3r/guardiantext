@@ -45,12 +45,19 @@ function renderMessage(msg) {
     <div class="msg-body">
       <div class="msg-meta">
         <span class="msg-sender">${escapeHtml(msg.sender_username)}</span>
+        <span class="msg-friend-status" id="friend-${msg.sender_id || msg.sender_username}"></span>
         <span class="msg-time">${timeStr(msg.timestamp)}</span>
-        ${filtered ? '<span class="filtered-tag">🛡️ filtered</span>' : ''}
+        ${filtered ? '<span class="filtered-tag">?? filtered</span>' : ''}
       </div>
       <div class="msg-content">${escapeHtml(msg.content)}</div>
     </div>`;
   area.appendChild(div);
+  
+  // Check friendship status for this sender
+  if (!isOwn && msg.sender_id) {
+    checkFriendStatus(msg.sender_id, msg.sender_username);
+  }
+  
   area.scrollTop = area.scrollHeight;
 }
 
@@ -88,11 +95,27 @@ async function loadRooms() {
     const list = document.getElementById('room-list');
     list.innerHTML = '';
     (data.rooms || []).forEach(room => {
+      const roomName = typeof room === 'string' ? room : room.name;
+      const isPrivate = room && room.is_private ? true : false;
+      
       const div = document.createElement('div');
-      div.className = `room-item${room === currentRoom ? ' active' : ''}`;
-      div.dataset.room = room;
-      div.innerHTML = `<span class="room-icon">#</span> ${escapeHtml(room)}`;
-      div.addEventListener('click', () => switchRoom(room));
+      div.className = `room-item${roomName === currentRoom ? ' active' : ''}`;
+      div.dataset.room = roomName;
+      
+      if (isPrivate) {
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <span><span class="room-icon">🔒</span> ${escapeHtml(roomName)}</span>
+          <button class="btn btn-ghost btn-xs" onclick="showInviteFriendsModal(${room.id})" style="margin-left: 0.5rem;">➕</button>
+        `;
+        div.querySelector('span:first-child').addEventListener('click', () => switchRoom(roomName));
+      } else {
+        div.innerHTML = `<span class="room-icon">#</span> ${escapeHtml(roomName)}`;
+        div.addEventListener('click', () => switchRoom(roomName));
+      }
+      
       list.appendChild(div);
     });
   } catch (e) {
@@ -441,6 +464,7 @@ async function init() {
 
   await loadRooms();
   await loadHistory(currentRoom);
+  await loadRoomInvitations();
 
   // Connect socket
   socket = io({ transports: ['websocket', 'polling'] });
@@ -512,14 +536,30 @@ async function init() {
     }
     const list = [...typingUsers];
     el.textContent = list.length
-      ? `${list.join(', ')} ${list.length === 1 ? 'is' : 'are'} typing…`
+      ? `${list.join(', ')} ${list.length === 1 ? 'is' : 'are'} typing...`
       : '';
+  });
+
+  // ── Friend request notifications ──
+  socket.on('friend_request_received', (data) => {
+    console.log('[DEBUG] Friend request received:', data);
+    showToast('🤝 Friend Request', data.message, 'success');
+    loadFriendRequests(); // Refresh the requests list
+  });
+
+  // ── Room invitation notifications ──
+  socket.on('room_invitation_received', (data) => {
+    console.log('[DEBUG] Room invitation received:', data);
+    showToast('📬 Room Invitation', data.message, 'success');
+    loadRoomInvitations(); // Refresh the invitations list
   });
 }
 
 // ── DOM events ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   init();
+  setupFriendTabs();
+  loadFriends();
 
   const input = document.getElementById('msg-input');
 
@@ -537,4 +577,548 @@ document.addEventListener('DOMContentLoaded', () => {
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight, 120) + 'px';
   });
+
+  // Friend search
+  const searchInput = document.getElementById('friend-search-input');
+  const searchBtn = document.getElementById('friend-search-btn');
+  
+  searchBtn.addEventListener('click', searchUsers);
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchUsers();
+    }
+  });
+
+  // Hide search results when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.friend-search') && !e.target.closest('.search-results')) {
+      hideSearchResults();
+    }
+  });
 });
+
+// ---- Friends Management ----
+async function loadFriends() {
+  try {
+    const response = await fetch('/api/friends');
+    const data = await response.json();
+    renderFriends(data.friends);
+  } catch (error) {
+    console.error('Error loading friends:', error);
+  }
+}
+
+async function loadFriendRequests() {
+  try {
+    console.log('[DEBUG] Loading friend requests...');
+    const response = await fetch('/api/friends/requests');
+    const data = await response.json();
+    console.log('[DEBUG] Friend requests API response:', data);
+    renderFriendRequests(data);
+  } catch (error) {
+    console.error('[DEBUG] Error loading friend requests:', error);
+  }
+}
+
+function renderFriends(friends) {
+  const container = document.getElementById('friends-list');
+  if (!friends || friends.length === 0) {
+    container.innerHTML = '<div class="text-muted text-xs">No friends yet</div>';
+    return;
+  }
+
+  container.innerHTML = friends.map(friend => `
+    <div class="friend-item">
+      <div class="friend-info">
+        <div class="friend-avatar">${avatarLetter(friend.username)}</div>
+        <div>
+          <div class="friend-name">${escapeHtml(friend.username)}</div>
+          <div class="friend-status">Friend</div>
+        </div>
+      </div>
+      <div class="friend-actions">
+        <button class="btn btn-ghost btn-xs" onclick="removeFriend(${friend.id})">Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderFriendRequests(requests) {
+  console.log('[DEBUG] renderFriendRequests called with:', requests);
+  
+  const container = document.getElementById('friend-requests');
+  console.log('[DEBUG] friend-requests container:', container);
+  
+  if (!container) {
+    console.error('[DEBUG] friend-requests container not found!');
+    return;
+  }
+  
+  const hasRequests = (requests.incoming && requests.incoming.length > 0) || 
+                     (requests.outgoing && requests.outgoing.length > 0);
+  
+  console.log('[DEBUG] hasRequests:', hasRequests);
+  console.log('[DEBUG] incoming:', requests.incoming);
+  console.log('[DEBUG] outgoing:', requests.outgoing);
+  
+  if (!hasRequests) {
+    container.innerHTML = '<div class="text-muted text-xs">No requests</div>';
+    console.log('[DEBUG] Set "No requests" message');
+    return;
+  }
+
+  let html = '';
+  
+  if (requests.incoming && requests.incoming.length > 0) {
+    html += '<div class="text-xs text-muted mb-2">Incoming Requests</div>';
+    requests.incoming.forEach(req => {
+      html += `
+        <div class="request-item">
+          <div class="request-header">
+            <div class="request-info">
+              <div class="friend-avatar">${avatarLetter(req.username)}</div>
+              <div>
+                <div class="friend-name">${escapeHtml(req.username)}</div>
+                <div class="request-time">${timeStr(req.created_at)}</div>
+              </div>
+            </div>
+            <div class="request-actions">
+              <button class="btn btn-success btn-xs" onclick="acceptFriendRequest(${req.id})">Accept</button>
+              <button class="btn btn-danger btn-xs" onclick="declineFriendRequest(${req.id})">Decline</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+  
+  if (requests.outgoing && requests.outgoing.length > 0) {
+    html += '<div class="text-xs text-muted mb-2 mt-3">Outgoing Requests</div>';
+    requests.outgoing.forEach(req => {
+      html += `
+        <div class="request-item">
+          <div class="request-header">
+            <div class="request-info">
+              <div class="friend-avatar">${avatarLetter(req.username)}</div>
+              <div>
+                <div class="friend-name">${escapeHtml(req.username)}</div>
+                <div class="request-time">${timeStr(req.created_at)}</div>
+              </div>
+            </div>
+            <div class="request-actions">
+              <button class="btn btn-ghost btn-xs" onclick="cancelFriendRequest(${req.id})">Cancel</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+  
+  console.log('[DEBUG] Setting HTML:', html);
+  container.innerHTML = html;
+}
+
+async function sendFriendRequest(username) {
+  try {
+    const response = await fetch('/api/friends/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showToast('Success', data.message, 'success');
+      hideSearchResults();
+      document.getElementById('friend-search-input').value = '';
+      loadFriendRequests();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error sending friend request:', error);
+    showToast('Error', 'Failed to send friend request', 'error');
+  }
+}
+
+async function acceptFriendRequest(requesterId) {
+  try {
+    const response = await fetch('/api/friends/accept', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requester_id: requesterId })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showToast('Success', data.message, 'success');
+      loadFriends();
+      loadFriendRequests();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error accepting friend request:', error);
+    showToast('Error', 'Failed to accept friend request', 'error');
+  }
+}
+
+async function declineFriendRequest(requesterId) {
+  try {
+    const response = await fetch('/api/friends/decline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requester_id: requesterId })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showToast('Success', data.message, 'success');
+      loadFriendRequests();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error declining friend request:', error);
+    showToast('Error', 'Failed to decline friend request', 'error');
+  }
+}
+
+async function cancelFriendRequest(friendId) {
+  try {
+    const response = await fetch('/api/friends/remove', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friend_id: friendId })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showToast('Success', data.message, 'success');
+      loadFriendRequests();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error canceling friend request:', error);
+    showToast('Error', 'Failed to cancel friend request', 'error');
+  }
+}
+
+async function removeFriend(friendId) {
+  try {
+    const response = await fetch('/api/friends/remove', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friend_id: friendId })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showToast('Success', data.message, 'success');
+      loadFriends();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error removing friend:', error);
+    showToast('Error', 'Failed to remove friend', 'error');
+  }
+}
+
+// ---- Friend Status Check ----
+async function checkFriendStatus(userId, username) {
+  try {
+    const response = await fetch(`/api/friends/status/${userId}`);
+    const data = await response.json();
+    
+    const statusElement = document.getElementById(`friend-${userId}`);
+    if (statusElement) {
+      if (data.status === 'accepted') {
+        statusElement.innerHTML = ' <span class="friend-indicator">??</span>';
+        statusElement.title = 'Friend';
+      } else if (data.status === 'pending') {
+        statusElement.innerHTML = ' <span class="pending-indicator">??</span>';
+        statusElement.title = 'Friend request pending';
+      }
+    }
+  } catch (error) {
+    console.error('Error checking friend status:', error);
+  }
+}
+
+// ---- Debug Friend Request Loading ----
+async function debugFriendRequests() {
+  try {
+    const response = await fetch('/api/friends/requests');
+    const data = await response.json();
+    console.log('[DEBUG] Friend requests response:', data);
+  } catch (error) {
+    console.error('[DEBUG] Error loading friend requests:', error);
+  }
+}
+
+// Make debug function available globally
+window.debugFriendRequests = debugFriendRequests;
+
+async function searchUsers() {
+  const query = document.getElementById('friend-search-input').value.trim();
+  if (!query) {
+    hideSearchResults();
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/friends/search?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+    showSearchResults(data.users);
+  } catch (error) {
+    console.error('Error searching users:', error);
+  }
+}
+
+function showSearchResults(users) {
+  const existingResults = document.querySelector('.search-results');
+  if (existingResults) existingResults.remove();
+
+  if (!users || users.length === 0) {
+    const resultsDiv = document.createElement('div');
+    resultsDiv.className = 'search-results';
+    resultsDiv.innerHTML = '<div class="text-muted text-xs">No users found</div>';
+    document.querySelector('.friend-search').after(resultsDiv);
+    return;
+  }
+
+  const resultsDiv = document.createElement('div');
+  resultsDiv.className = 'search-results';
+  resultsDiv.innerHTML = users.map(user => `
+    <div class="search-result-item" onclick="sendFriendRequest('${user.username}')">
+      <div class="friend-info">
+        <div class="friend-avatar">${avatarLetter(user.username)}</div>
+        <div class="friend-name">${escapeHtml(user.username)}</div>
+      </div>
+      <button class="btn btn-primary btn-xs">Add Friend</button>
+    </div>
+  `).join('');
+  
+  document.querySelector('.friend-search').after(resultsDiv);
+}
+
+function hideSearchResults() {
+  const results = document.querySelector('.search-results');
+  if (results) results.remove();
+}
+
+// ---- Friend Tab Switching ----
+function setupFriendTabs() {
+  const tabs = document.querySelectorAll('.friend-tab');
+  const panels = document.querySelectorAll('.friends-panel');
+  
+  console.log('[DEBUG] Setting up friend tabs, found tabs:', tabs.length, 'panels:', panels.length);
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetTab = tab.dataset.tab;
+      console.log('[DEBUG] Tab clicked:', targetTab);
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      
+      tab.classList.add('active');
+      
+      // Use correct element IDs
+      const targetPanel = document.getElementById(
+        targetTab === 'friends' ? 'friends-list' : 'friend-requests'
+      );
+      console.log('[DEBUG] Target panel:', targetPanel);
+      
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+        
+        if (targetTab === 'friends') {
+          console.log('[DEBUG] Loading friends...');
+          loadFriends();
+        } else if (targetTab === 'requests') {
+          console.log('[DEBUG] Loading friend requests...');
+          loadFriendRequests();
+        }
+      } else {
+        console.error('[DEBUG] Target panel not found for tab:', targetTab);
+      }
+    });
+  });
+}
+
+// ---- Private Rooms Management ----
+
+let currentPrivateRoomId = null;
+
+async function loadRoomInvitations() {
+  try {
+    const res = await fetch('/api/rooms/invitations');
+    const data = await res.json();
+    const list = document.getElementById('room-invitations-list');
+    
+    if (!list) return;
+    
+    if (!data.invitations || data.invitations.length === 0) {
+      list.innerHTML = '<div class="text-muted text-xs">No invitations</div>';
+      return;
+    }
+    
+    list.innerHTML = data.invitations.map(inv => `
+      <div style="background: var(--bg3); padding: 0.5rem; border-radius: 6px; margin-bottom: 0.3rem;">
+        <div class="text-xs text-muted">${escapeHtml(inv.inviter_username)} invited you</div>
+        <div style="margin-top: 0.3rem; display: flex; gap: 0.3rem;">
+          <button class="btn btn-primary btn-xs" onclick="acceptRoomInvitation(${inv.id})">Accept</button>
+          <button class="btn btn-ghost btn-xs" onclick="declineRoomInvitation(${inv.id})">Decline</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load room invitations:', e);
+  }
+}
+
+async function acceptRoomInvitation(invitationId) {
+  try {
+    const res = await fetch(`/api/rooms/invitations/${invitationId}/accept`, {
+      method: 'POST'
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast('Success', 'Invitation accepted', 'success');
+      loadRoomInvitations();
+      loadRooms();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (e) {
+    console.error('Error accepting invitation:', e);
+    showToast('Error', 'Failed to accept invitation', 'error');
+  }
+}
+
+async function declineRoomInvitation(invitationId) {
+  try {
+    const res = await fetch(`/api/rooms/invitations/${invitationId}/decline`, {
+      method: 'POST'
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast('Success', 'Invitation declined', 'success');
+      loadRoomInvitations();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (e) {
+    console.error('Error declining invitation:', e);
+    showToast('Error', 'Failed to decline invitation', 'error');
+  }
+}
+
+function showCreateRoomModal() {
+  document.getElementById('create-room-modal').style.display = 'flex';
+  document.getElementById('new-room-name').focus();
+}
+
+function closeCreateRoomModal() {
+  document.getElementById('create-room-modal').style.display = 'none';
+  document.getElementById('new-room-name').value = '';
+}
+
+async function createPrivateRoom() {
+  const name = document.getElementById('new-room-name').value.trim();
+  
+  if (!name) {
+    showToast('Error', 'Please enter a room name', 'error');
+    return;
+  }
+  
+  try {
+    const res = await fetch('/api/rooms/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast('Success', 'Private room created', 'success');
+      closeCreateRoomModal();
+      loadRooms();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (e) {
+    console.error('Error creating room:', e);
+    showToast('Error', 'Failed to create room', 'error');
+  }
+}
+
+function showInviteFriendsModal(roomId) {
+  currentPrivateRoomId = roomId;
+  document.getElementById('invite-friends-modal').style.display = 'flex';
+  loadFriendsForInvite();
+}
+
+function closeInviteFriendsModal() {
+  document.getElementById('invite-friends-modal').style.display = 'none';
+  currentPrivateRoomId = null;
+}
+
+async function loadFriendsForInvite() {
+  try {
+    const res = await fetch('/api/friends');
+    const data = await res.json();
+    const list = document.getElementById('invite-friends-list');
+    
+    if (!data.friends || data.friends.length === 0) {
+      list.innerHTML = '<div class="text-muted text-xs">No friends to invite</div>';
+      return;
+    }
+    
+    list.innerHTML = data.friends.map(friend => `
+      <div class="friend-select-item">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+            ${avatarLetter(friend.username)}
+          </div>
+          <span>${escapeHtml(friend.username)}</span>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="inviteFriendToRoom(${friend.id})">Invite</button>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load friends:', e);
+  }
+}
+
+async function inviteFriendToRoom(friendId) {
+  try {
+    const res = await fetch(`/api/rooms/${currentPrivateRoomId}/invite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friend_id: friendId })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast('Success', 'Invitation sent', 'success');
+      loadFriendsForInvite();
+    } else {
+      showToast('Error', data.message, 'error');
+    }
+  } catch (e) {
+    console.error('Error inviting friend:', e);
+    showToast('Error', 'Failed to send invitation', 'error');
+  }
+}

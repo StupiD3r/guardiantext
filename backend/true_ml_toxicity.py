@@ -22,6 +22,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 import sqlite3
 
+# ── Obfuscation & Normalization ────────────────────────────────────────────────
+# LEET_MAP for detecting obfuscated toxic words (fvck, sh1t, etc.)
+LEET_MAP = str.maketrans({'@':'a','4':'a','3':'e','1':'i','0':'o','5':'s','$':'s','7':'t','+':'t','8':'b','6':'g','v':'u','z':'s','x':'a','!':'i'})
+
+def _normalize_word(word: str) -> str:
+    """Normalize word by converting leetspeak/obfuscations to standard text."""
+    return word.lower().translate(LEET_MAP)
+
 @dataclass
 class ToxicWordAnalysis:
     """Result of ML toxic word analysis."""
@@ -546,6 +554,8 @@ class TrueMLToxicityDetector:
             
             # Check for censored versions in the original message
             word_lower = word.lower()
+            # Normalize word to detect obfuscations (fvck -> fuck, sh1t -> shit, etc.)
+            word_normalized = _normalize_word(word)
             is_censored_toxic = False
             
             for pattern in censored_patterns:
@@ -557,12 +567,12 @@ class TrueMLToxicityDetector:
             word_toxicity = 0.0
             is_toxic_fallback = False
             
-            # Method 1: Fallback to known toxic words (most reliable)
-            if word_lower in known_toxic:
+            # Method 1: Fallback to known toxic words (most reliable) - check both original and normalized
+            if word_lower in known_toxic or word_normalized in known_toxic:
                 word_toxicity = 0.9
                 is_toxic_fallback = True
-            # Check for partial matches only for specific cases
-            elif any(word_lower.startswith(toxic) and len(word_lower) <= len(toxic) + 2 
+            # Check for partial matches only for specific cases (both original and normalized)
+            elif any((word_lower.startswith(toxic) or word_normalized.startswith(toxic)) and len(word_normalized) <= len(toxic) + 2 
                    for toxic in ['fuck', 'shit', 'damn', 'hell', 'bitch', 'ass']):
                 word_toxicity = max(word_toxicity, 0.8)
                 is_toxic_fallback = True

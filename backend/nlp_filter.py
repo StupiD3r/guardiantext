@@ -14,7 +14,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
 
-LEET_MAP = str.maketrans({'@':'a','4':'a','3':'e','1':'i','0':'o','5':'s','$':'s','7':'t','+':'t','8':'b','6':'g'})
+LEET_MAP = str.maketrans({'@':'a','4':'a','3':'e','1':'i','0':'o','5':'s','$':'s','7':'t','+':'t','8':'b','6':'g','v':'u','z':'s','x':'a','!':'i'})
 
 EXPANSIONS = {
     'kys':'kill yourself','stfu':'shut the fuck up','wtf':'what the fuck',
@@ -310,11 +310,16 @@ def analyze_message(text: str, block_threshold: float = 0.70, warn_threshold: fl
         cleaned = original
     suggestion = _suggest(toxic_words) if toxic_words else ""
 
-    # Decide action from ML probability AND toxic words presence
-    # Only warn/block if BOTH threshold is met AND toxic words are found
-    if proba >= block_threshold and toxic_words:
+    # Decision logic: toxic words take priority over ML score
+    # If toxic words found, always warn/block based on severity
+    if toxic_words:
+        if max_sev >= 3:  # High severity words (violence, harassment)
+            action = 'blocked'
+        else:  # Lower severity toxic words
+            action = 'warned'
+    elif proba >= block_threshold:  # No toxic words but high ML score
         action = 'blocked'
-    elif proba >= warn_threshold and toxic_words:
+    elif proba >= warn_threshold:  # No toxic words but moderate ML score
         action = 'warned'
     else:
         action = 'allowed'

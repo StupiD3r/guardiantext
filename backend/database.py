@@ -257,24 +257,45 @@ def ensure_default_admin():
     """
     Ensure there is at least one admin user.
     Creates a default 'admin' account with password 'admin123' if none exists.
+    Also updates old SHA256 passwords to bcrypt if found.
     """
     conn = get_db()
     cur = conn.cursor()
+    
+    # Check if any admin exists
     cur.execute("SELECT COUNT(*) FROM users WHERE is_admin=1")
     has_admin = cur.fetchone()[0] > 0
+    
     if not has_admin:
-        # Try to create admin user if username is free
+        # No admin exists, try to create or promote one
         cur.execute("SELECT id FROM users WHERE username='admin'")
         existing = cur.fetchone()
         if existing:
+            # Admin user exists, just promote them
             cur.execute("UPDATE users SET is_admin=1 WHERE id=?", (existing[0],))
+            admin_id = existing[0]
         else:
+            # Create new admin user
             cur.execute(
                 "INSERT INTO users (username, password_hash, is_admin) VALUES (?, ?, 1)",
                 ("admin", hash_password("admin123")),
             )
+            admin_id = cur.lastrowid
+    else:
+        # Admin exists, check if password is old SHA256 format (needs migration)
+        cur.execute("SELECT id, password_hash FROM users WHERE username='admin'")
+        admin = cur.fetchone()
+        if admin and not admin['password_hash'].startswith('$2'):
+            # Old SHA256 hash detected, update to bcrypt
+            logger.info("Migrating admin password from SHA256 to bcrypt")
+            cur.execute(
+                "UPDATE users SET password_hash=? WHERE id=?",
+                (hash_password("admin123"), admin['id'])
+            )
+    
     conn.commit()
     conn.close()
+    logger.info("Default admin user ensured")
 
 
 def set_user_banned(user_id, banned: bool):

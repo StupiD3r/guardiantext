@@ -8,9 +8,21 @@ Access from other PCs:  http://<this-machine-ip>:5000
 import os
 import sys
 import re
+import logging
 
 # Make sure local modules are importable
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(os.path.dirname(__file__), 'guardiantext.log')),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 from flask import (Flask, render_template, request,
                    session, jsonify, redirect, url_for, send_from_directory)
@@ -35,7 +47,9 @@ from database import (init_db, create_user, verify_user, save_message,
                       add_room_member, remove_room_member,
                       user_has_room_access, invite_friend_to_room,
                       get_room_invitations, accept_room_invitation,
-                      decline_room_invitation, user_has_room_access_by_name)
+                      decline_room_invitation, user_has_room_access_by_name,
+                      is_room_admin, promote_to_admin, demote_to_member,
+                      kick_member, delete_room, update_room_name)
 from auth import validate_username, validate_password, login_required, get_current_user
 from nlp_filter import analyze_message, FilterResult
 from learning_suggestions import generate_ml_suggestions, learn_from_user_choice
@@ -572,6 +586,152 @@ def decline_room_invitation_api(invitation_id):
     success, message = decline_room_invitation(invitation_id, user['id'])
     
     if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 400
+
+
+# ── Room Role Management ────────────────────────────────────────────────────────
+
+@app.route('/api/rooms/<int:room_id>/promote', methods=['POST'])
+@login_required
+def promote_member_api(room_id):
+    """Promote a member to admin."""
+    data = request.get_json()
+    user_id_to_promote = data.get('user_id')
+    
+    if not user_id_to_promote:
+        return jsonify({"success": False, "message": "User ID is required"}), 400
+    
+    user = get_current_user()
+    
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    success, message = promote_to_admin(room_id, user_id_to_promote, user['id'])
+    
+    if success:
+        # Notify room members of the promotion
+        socketio.emit('member_promoted', {
+            'user_id': user_id_to_promote,
+            'promoted_by': user['username']
+        }, room=f"room_{room_id}")
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 403
+
+
+@app.route('/api/rooms/<int:room_id>/demote', methods=['POST'])
+@login_required
+def demote_member_api(room_id):
+    """Demote an admin to member."""
+    data = request.get_json()
+    user_id_to_demote = data.get('user_id')
+    
+    if not user_id_to_demote:
+        return jsonify({"success": False, "message": "User ID is required"}), 400
+    
+    user = get_current_user()
+    
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    success, message = demote_to_member(room_id, user_id_to_demote, user['id'])
+    
+    if success:
+        # Notify room members of the demotion
+        socketio.emit('member_demoted', {
+            'user_id': user_id_to_demote,
+            'demoted_by': user['username']
+        }, room=f"room_{room_id}")
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 403
+
+
+@app.route('/api/rooms/<int:room_id>/kick', methods=['POST'])
+@login_required
+def kick_member_api(room_id):
+    """Kick a member from the room."""
+    data = request.get_json()
+    user_id_to_kick = data.get('user_id')
+    
+    if not user_id_to_kick:
+        return jsonify({"success": False, "message": "User ID is required"}), 400
+    
+    user = get_current_user()
+    
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    success, message = kick_member(room_id, user_id_to_kick, user['id'])
+    
+    if success:
+        # Notify the kicked user
+        socketio.emit('kicked_from_room', {
+            'room_id': room_id,
+            'kicked_by': user['username']
+        }, room=f"user_{user_id_to_kick}")
+        
+        # Notify room members
+        socketio.emit('member_kicked', {
+            'user_id': user_id_to_kick,
+            'kicked_by': user['username']
+        }, room=f"room_{room_id}")
+        
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 403
+
+
+@app.route('/api/rooms/<int:room_id>/delete', methods=['POST'])
+@login_required
+def delete_room_api(room_id):
+    """Delete a room (admin only)."""
+    user = get_current_user()
+    
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    success, message = delete_room(room_id, user['id'])
+    
+    if success:
+        # Notify all room members that room was deleted
+        socketio.emit('room_deleted', {
+            'room_id': room_id,
+            'deleted_by': user['username']
+        }, room=f"room_{room_id}")
+        
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 403
+
+
+@app.route('/api/rooms/<int:room_id>/rename', methods=['POST'])
+@login_required
+def rename_room_api(room_id):
+    """Update room name (any member can do this)."""
+    data = request.get_json()
+    new_name = (data.get('name') or '').strip()
+    
+    if not new_name:
+        return jsonify({"success": False, "message": "Room name is required"}), 400
+    
+    user = get_current_user()
+    
+    if not user_has_room_access(room_id, user['id']):
+        return jsonify({"success": False, "message": "Access denied"}), 403
+    
+    success, message = update_room_name(room_id, new_name, user['id'])
+    
+    if success:
+        # Notify all room members of the name change
+        socketio.emit('room_renamed', {
+            'room_id': room_id,
+            'new_name': new_name,
+            'renamed_by': user['username']
+        }, room=f"room_{room_id}")
+        
         return jsonify({"success": True, "message": message})
     else:
         return jsonify({"success": False, "message": message}), 400

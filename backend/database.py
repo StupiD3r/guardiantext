@@ -2,9 +2,22 @@ import sqlite3
 import hashlib
 import os
 import sys
+import bcrypt
+import logging
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import Config
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(os.path.dirname(__file__), 'guardiantext.log')),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 def get_db():
     conn = sqlite3.connect(Config.DATABASE_PATH)
@@ -12,7 +25,22 @@ def get_db():
     return conn
 
 def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+    """Hash password using bcrypt (secure for storage)"""
+    if isinstance(password, str):
+        password = password.encode('utf-8')
+    return bcrypt.hashpw(password, bcrypt.gensalt(rounds=12)).decode('utf-8')
+
+def verify_password(password, password_hash):
+    """Verify password against bcrypt hash"""
+    if isinstance(password, str):
+        password = password.encode('utf-8')
+    if isinstance(password_hash, str):
+        password_hash = password_hash.encode('utf-8')
+    try:
+        return bcrypt.checkpw(password, password_hash)
+    except Exception as e:
+        logger.error(f"Password verification error: {e}")
+        return False
 
 def init_db():
     conn = get_db()
@@ -125,6 +153,7 @@ def init_db():
                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
                 room_id     INTEGER NOT NULL,
                 user_id     INTEGER NOT NULL,
+                role        TEXT DEFAULT 'member',
                 joined_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (room_id) REFERENCES rooms(id),
                 FOREIGN KEY (user_id) REFERENCES users(id),
@@ -133,6 +162,22 @@ def init_db():
         ''')
     except sqlite3.OperationalError:
         pass
+    
+    # Migrate existing room_members to add role column if needed
+    try:
+        cursor.execute("PRAGMA table_info(room_members)")
+        columns = [col[1] for col in cursor.fetchall()]
+        if 'role' not in columns:
+            logger.info("Adding role column to room_members table...")
+            cursor.execute("ALTER TABLE room_members ADD COLUMN role TEXT DEFAULT 'member'")
+            # Set room owners as admins
+            cursor.execute("""
+                UPDATE room_members SET role = 'admin'
+                WHERE room_id IN (SELECT id FROM rooms WHERE owner_id = room_members.user_id)
+            """)
+            conn.commit()
+    except Exception as e:
+        logger.warning(f"Migration error (non-critical): {e}")
     
     # Create room_invitations table if it doesn't exist
     try:
@@ -170,22 +215,36 @@ def create_user(username, password):
             (username, hash_password(password))
         )
         conn.commit()
+        logger.info(f"User created: {username}")
         return True, "Account created successfully."
     except sqlite3.IntegrityError:
+        logger.warning(f"User creation failed: username already taken - {username}")
         return False, "Username already taken."
+    except Exception as e:
+        logger.error(f"Error creating user: {e}")
+        return False, "An error occurred during registration."
     finally:
         conn.close()
 
 def verify_user(username, password):
     conn = get_db()
-    row = conn.execute(
-        "SELECT * FROM users WHERE username=? AND password_hash=?",
-        (username, hash_password(password))
-    ).fetchone()
-    conn.close()
-    if row:
-        return True, dict(row)
-    return False, None
+    try:
+        row = conn.execute(
+            "SELECT * FROM users WHERE username=?",
+            (username,)
+        ).fetchone()
+        
+        if row and verify_password(password, row['password_hash']):
+            logger.info(f"User login successful: {username}")
+            return True, dict(row)
+        
+        logger.warning(f"Failed login attempt for: {username}")
+        return False, None
+    except Exception as e:
+        logger.error(f"Error verifying user: {e}")
+        return False, None
+    finally:
+        conn.close()
 
 def get_user_by_id(user_id):
     conn = get_db()
@@ -581,7 +640,7 @@ def search_users(query, current_user_id):
 # ---- Private Rooms Management ----
 
 def create_private_room(room_name, owner_id):
-    """Create a private room and add the owner as a member."""
+    """Create a private room and add the owner as an admin member."""
     conn = get_db()
     try:
         # Create the room
@@ -592,9 +651,9 @@ def create_private_room(room_name, owner_id):
         )
         room_id = cursor.lastrowid
         
-        # Add owner as a member
+        # Add owner as an admin member
         cursor.execute(
-            "INSERT INTO room_members (room_id, user_id) VALUES (?, ?)",
+            "INSERT INTO room_members (room_id, user_id, role) VALUES (?, ?, 'admin')",
             (room_id, owner_id)
         )
         
@@ -640,36 +699,41 @@ def get_all_accessible_rooms(user_id):
 
 
 def get_room_members(room_id):
-    """Get all members of a room."""
+    """Get all members of a room with their roles."""
     conn = get_db()
     rows = conn.execute(
-        """SELECT u.id, u.username
+        """SELECT u.id, u.username, COALESCE(rm.role, 'member') as role
            FROM users u
            JOIN room_members rm ON u.id = rm.user_id
            WHERE rm.room_id = ?
-           ORDER BY u.username""",
+           ORDER BY rm.role DESC, u.username""",
         (room_id,)
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 
 
-def add_room_member(room_id, user_id):
-    """Add a user to a room."""
+def add_room_member(room_id, user_id, role='member'):
+    """Add a user to a room with specified role."""
+    if role not in ['admin', 'member']:
+        return False, "Invalid role. Must be 'admin' or 'member'."
+    
     conn = get_db()
     try:
         conn.execute(
-            "INSERT INTO room_members (room_id, user_id) VALUES (?, ?)",
-            (room_id, user_id)
+            "INSERT INTO room_members (room_id, user_id, role) VALUES (?, ?, ?)",
+            (room_id, user_id, role)
         )
         conn.commit()
         conn.close()
+        logger.info(f"Member {user_id} added to room {room_id} with role {role}")
         return True, "Member added to room."
     except sqlite3.IntegrityError:
         conn.close()
         return False, "User is already a member of this room."
     except Exception as e:
         conn.close()
+        logger.error(f"Error adding member: {e}")
         return False, f"Error adding member: {str(e)}"
 
 
@@ -694,6 +758,130 @@ def remove_room_member(room_id, user_id):
         conn.close()
         return False, f"Error removing member: {str(e)}"
 
+
+def get_user_room_role(room_id, user_id):
+    """Get the role of a user in a room (admin, member, or None)."""
+    conn = get_db()
+    row = conn.execute(
+        "SELECT role FROM room_members WHERE room_id = ? AND user_id = ?",
+        (room_id, user_id)
+    ).fetchone()
+    conn.close()
+    return row['role'] if row else None
+
+def is_room_admin(room_id, user_id):
+    """Check if user is an admin of the room."""
+    role = get_user_room_role(room_id, user_id)
+    return role == 'admin'
+
+def promote_to_admin(room_id, user_id, promoted_by_id):
+    """Promote a member to admin (admin only)."""
+    if not is_room_admin(room_id, promoted_by_id):
+        return False, "You must be an admin to promote members."
+    
+    conn = get_db()
+    try:
+        conn.execute(
+            "UPDATE room_members SET role = 'admin' WHERE room_id = ? AND user_id = ?",
+            (room_id, user_id)
+        )
+        conn.commit()
+        conn.close()
+        logger.info(f"User {user_id} promoted to admin in room {room_id} by {promoted_by_id}")
+        return True, "Member promoted to admin."
+    except Exception as e:
+        conn.close()
+        logger.error(f"Error promoting member: {e}")
+        return False, f"Error promoting member: {str(e)}"
+
+def demote_to_member(room_id, user_id, demoted_by_id):
+    """Demote an admin to member (admin only)."""
+    if not is_room_admin(room_id, demoted_by_id):
+        return False, "You must be an admin to demote members."
+    
+    # Prevent owner from being demoted
+    room = get_db().execute("SELECT owner_id FROM rooms WHERE id = ?", (room_id,)).fetchone()
+    if room and room['owner_id'] == user_id:
+        return False, "Cannot demote the room owner."
+    
+    conn = get_db()
+    try:
+        conn.execute(
+            "UPDATE room_members SET role = 'member' WHERE room_id = ? AND user_id = ?",
+            (room_id, user_id)
+        )
+        conn.commit()
+        conn.close()
+        logger.info(f"User {user_id} demoted to member in room {room_id}")
+        return True, "Member demoted to member role."
+    except Exception as e:
+        conn.close()
+        logger.error(f"Error demoting member: {e}")
+        return False, f"Error demoting member: {str(e)}"
+
+def kick_member(room_id, user_id, kicked_by_id):
+    """Kick a member from the room (admin only)."""
+    if not is_room_admin(room_id, kicked_by_id):
+        return False, "You must be an admin to kick members."
+    
+    # Prevent owner from being kicked
+    room = get_db().execute("SELECT owner_id FROM rooms WHERE id = ?", (room_id,)).fetchone()
+    if room and room['owner_id'] == user_id:
+        return False, "Cannot kick the room owner."
+    
+    return remove_room_member(room_id, user_id)
+
+def delete_room(room_id, deleted_by_id):
+    """Delete a room (admin/owner only)."""
+    if not is_room_admin(room_id, deleted_by_id):
+        return False, "You must be an admin to delete the room."
+    
+    conn = get_db()
+    try:
+        # Delete all messages in the room
+        conn.execute("DELETE FROM messages WHERE room = (SELECT name FROM rooms WHERE id = ?)", (room_id,))
+        # Delete all room members
+        conn.execute("DELETE FROM room_members WHERE room_id = ?", (room_id,))
+        # Delete all room invitations
+        conn.execute("DELETE FROM room_invitations WHERE room_id = ?", (room_id,))
+        # Delete the room
+        conn.execute("DELETE FROM rooms WHERE id = ?", (room_id,))
+        conn.commit()
+        conn.close()
+        logger.info(f"Room {room_id} deleted by {deleted_by_id}")
+        return True, "Room deleted successfully."
+    except Exception as e:
+        conn.close()
+        logger.error(f"Error deleting room: {e}")
+        return False, f"Error deleting room: {str(e)}"
+
+def update_room_name(room_id, new_name, updated_by_id):
+    """Update room name (admin/owner only, or any member)."""
+    # Allow any member to update room name (based on requirement)
+    role = get_user_room_role(room_id, updated_by_id)
+    if role is None:
+        return False, "You are not a member of this room."
+    
+    # Validate room name
+    if not new_name or len(new_name) < 2:
+        return False, "Room name must be at least 2 characters."
+    if len(new_name) > 50:
+        return False, "Room name must be 50 characters or fewer."
+    
+    conn = get_db()
+    try:
+        conn.execute(
+            "UPDATE rooms SET name = ? WHERE id = ?",
+            (new_name, room_id)
+        )
+        conn.commit()
+        conn.close()
+        logger.info(f"Room {room_id} name updated to '{new_name}' by {updated_by_id}")
+        return True, "Room name updated."
+    except Exception as e:
+        conn.close()
+        logger.error(f"Error updating room name: {e}")
+        return False, f"Error updating room name: {str(e)}"
 
 def user_has_room_access(room_id, user_id):
     """Check if a user has access to a room."""

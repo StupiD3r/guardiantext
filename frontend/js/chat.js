@@ -108,7 +108,10 @@ async function loadRooms() {
         div.style.alignItems = 'center';
         div.innerHTML = `
           <span><span class="room-icon">🔒</span> ${escapeHtml(roomName)}</span>
-          <button class="btn btn-ghost btn-xs" onclick="showInviteFriendsModal(${room.id})" style="margin-left: 0.5rem;">➕</button>
+          <div style="display: flex; gap: 0.3rem;">
+            <button class="btn btn-ghost btn-xs" onclick="showMembersModal(${room.id})" title="Members">👥</button>
+            <button class="btn btn-ghost btn-xs" onclick="showInviteFriendsModal(${room.id})" title="Invite">➕</button>
+          </div>
         `;
         div.querySelector('span:first-child').addEventListener('click', () => switchRoom(roomName));
       } else {
@@ -553,6 +556,274 @@ async function init() {
     showToast('📬 Room Invitation', data.message, 'success');
     loadRoomInvitations(); // Refresh the invitations list
   });
+
+  // ── Room role management notifications ──
+  socket.on('member_promoted', (data) => {
+    showToast('⬆️ Member Promoted', `${data.promoted_by} promoted a member to admin`, 'success');
+    loadMembers(roomIdForMembers);
+  });
+
+  socket.on('member_demoted', (data) => {
+    showToast('⬇️ Member Demoted', `${data.demoted_by} demoted a member to member`, 'info');
+    loadMembers(roomIdForMembers);
+  });
+
+  socket.on('member_kicked', (data) => {
+    showToast('👢 Member Kicked', `${data.kicked_by} kicked a member`, 'warning');
+    loadMembers(roomIdForMembers);
+  });
+
+  socket.on('kicked_from_room', (data) => {
+    showToast('👢 Kicked from Room', `You were kicked by ${data.kicked_by}`, 'danger');
+    currentRoom = 'General';
+    loadRooms();
+    loadHistory(currentRoom);
+  });
+
+  socket.on('room_renamed', (data) => {
+    showToast('✏️ Room Renamed', `Room renamed to "${data.new_name}" by ${data.renamed_by}`, 'info');
+    loadRooms();
+    if (currentRoom === data.room_id || currentRoom === data.new_name) {
+      currentRoom = data.new_name;
+    }
+  });
+
+  socket.on('room_deleted', (data) => {
+    showToast('🗑️ Room Deleted', `Room was deleted by ${data.deleted_by}`, 'warning');
+    currentRoom = 'General';
+    loadRooms();
+    loadHistory(currentRoom);
+    closeMembersModal();
+  });
+}
+
+// ── Room Member Management ─────────────────────────────────────────────────────
+let roomIdForMembers = null;
+let currentUserRole = null;
+
+async function loadMembers(roomId) {
+  roomIdForMembers = roomId;
+  try {
+    const res = await fetch(`/api/rooms/${roomId}/members`);
+    if (!res.ok) {
+      showToast('Error', 'Failed to load members', 'danger');
+      return;
+    }
+    const data = await res.json();
+    const membersList = document.getElementById('members-list');
+    membersList.innerHTML = '';
+
+    const members = data.members || [];
+    members.forEach(member => {
+      const isCurrentUser = member.id === currentUser.id;
+      const isAdmin = member.role === 'admin';
+      const isMember = member.role === 'member';
+
+      const memberDiv = document.createElement('div');
+      memberDiv.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border);
+      `;
+
+      const nameDiv = document.createElement('div');
+      nameDiv.innerHTML = `
+        <strong>${escapeHtml(member.username)}</strong>
+        <span style="margin-left: 0.5rem; font-size: 0.8rem; background: ${isAdmin ? 'var(--primary)' : 'var(--text-dim)'}; 
+          padding: 0.2rem 0.5rem; border-radius: 4px; color: white;">
+          ${isAdmin ? '👑 Admin' : '👤 Member'}
+        </span>
+        ${isCurrentUser ? '<span style="margin-left: 0.5rem; color: var(--primary);">(You)</span>' : ''}
+      `;
+
+      const actionDiv = document.createElement('div');
+      actionDiv.style.cssText = 'display: flex; gap: 0.5rem;';
+
+      // Show admin controls if current user is admin
+      if (currentUserRole === 'admin' && !isCurrentUser) {
+        if (isAdmin) {
+          const demoteBtn = document.createElement('button');
+          demoteBtn.className = 'btn btn-sm btn-warning';
+          demoteBtn.textContent = '⬇️ Demote';
+          demoteBtn.onclick = () => demoteMember(roomId, member.id);
+          actionDiv.appendChild(demoteBtn);
+        } else {
+          const promoteBtn = document.createElement('button');
+          promoteBtn.className = 'btn btn-sm btn-success';
+          promoteBtn.textContent = '⬆️ Promote';
+          promoteBtn.onclick = () => promoteMember(roomId, member.id);
+          actionDiv.appendChild(promoteBtn);
+        }
+
+        const kickBtn = document.createElement('button');
+        kickBtn.className = 'btn btn-sm btn-danger';
+        kickBtn.textContent = '👢 Kick';
+        kickBtn.onclick = () => kickMember(roomId, member.id, member.username);
+        actionDiv.appendChild(kickBtn);
+      }
+
+      memberDiv.appendChild(nameDiv);
+      if (actionDiv.children.length > 0) {
+        memberDiv.appendChild(actionDiv);
+      }
+      membersList.appendChild(memberDiv);
+    });
+  } catch (e) {
+    console.error('Error loading members:', e);
+    showToast('Error', 'Failed to load members', 'danger');
+  }
+}
+
+async function showMembersModal(roomId) {
+  // Check if user is admin of this room
+  try {
+    const res = await fetch(`/api/rooms/${roomId}/members`);
+    const data = await res.json();
+    const members = data.members || [];
+    const userMember = members.find(m => m.id === currentUser.id);
+    currentUserRole = userMember?.role || 'member';
+  } catch (e) {
+    currentUserRole = 'member';
+  }
+
+  await loadMembers(roomId);
+  document.getElementById('members-modal').style.display = 'flex';
+
+  // Show admin controls if user is admin
+  const adminControls = document.getElementById('room-admin-controls');
+  if (currentUserRole === 'admin') {
+    adminControls.style.display = 'flex';
+    adminControls.style.gap = '0.5rem';
+  } else {
+    adminControls.style.display = 'none';
+  }
+}
+
+function closeMembersModal() {
+  document.getElementById('members-modal').style.display = 'none';
+}
+
+async function promoteMember(roomId, userId) {
+  try {
+    const res = await fetch(`/api/rooms/${roomId}/promote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('Success', data.message, 'success');
+      loadMembers(roomId);
+    } else {
+      showToast('Error', data.message, 'danger');
+    }
+  } catch (e) {
+    showToast('Error', 'Failed to promote member', 'danger');
+  }
+}
+
+async function demoteMember(roomId, userId) {
+  try {
+    const res = await fetch(`/api/rooms/${roomId}/demote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('Success', data.message, 'success');
+      loadMembers(roomId);
+    } else {
+      showToast('Error', data.message, 'danger');
+    }
+  } catch (e) {
+    showToast('Error', 'Failed to demote member', 'danger');
+  }
+}
+
+async function kickMember(roomId, userId, username) {
+  if (!confirm(`Kick ${username} from the room?`)) return;
+
+  try {
+    const res = await fetch(`/api/rooms/${roomId}/kick`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('Success', `${username} kicked from room`, 'success');
+      loadMembers(roomId);
+    } else {
+      showToast('Error', data.message, 'danger');
+    }
+  } catch (e) {
+    showToast('Error', 'Failed to kick member', 'danger');
+  }
+}
+
+function showRenameRoomModal() {
+  document.getElementById('rename-room-input').value = '';
+  document.getElementById('rename-room-modal').style.display = 'flex';
+}
+
+function closeRenameRoomModal() {
+  document.getElementById('rename-room-modal').style.display = 'none';
+}
+
+async function renameRoom() {
+  const newName = document.getElementById('rename-room-input').value.trim();
+  if (!newName || newName.length < 2 || newName.length > 50) {
+    showToast('Error', 'Room name must be 2-50 characters', 'danger');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/rooms/${roomIdForMembers}/rename`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: newName })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('Success', 'Room renamed', 'success');
+      closeRenameRoomModal();
+      closeMembersModal();
+      loadRooms();
+    } else {
+      showToast('Error', data.message, 'danger');
+    }
+  } catch (e) {
+    showToast('Error', 'Failed to rename room', 'danger');
+  }
+}
+
+function confirmDeleteRoom() {
+  if (!confirm('⚠️ Are you sure? This will permanently delete the room and all its messages!')) return;
+  deleteRoom();
+}
+
+async function deleteRoom() {
+  try {
+    const res = await fetch(`/api/rooms/${roomIdForMembers}/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('Success', 'Room deleted', 'success');
+      closeMembersModal();
+      currentRoom = 'General';
+      loadRooms();
+      loadHistory(currentRoom);
+    } else {
+      showToast('Error', data.message, 'danger');
+    }
+  } catch (e) {
+    showToast('Error', 'Failed to delete room', 'danger');
+  }
 }
 
 // ── DOM events ─────────────────────────────────────────────────────────────────

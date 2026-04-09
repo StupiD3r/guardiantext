@@ -1,0 +1,107 @@
+2026-04-09 14:36:04,217 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.12:5000
+2026-04-09 14:36:04,217 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-09 14:36:04,218 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 14:36:07,320 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 14:36:07,325 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 14:36:07,341 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:07] "[32mGET / HTTP/1.1[0m" 302 -
+2026-04-09 14:36:07,342 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:07] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:36:07,343 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:07] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:36:07,717 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:07] "[36mGET /chat.html HTTP/1.1[0m" 304 -
+2026-04-09 14:36:07,931 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:07] "[36mGET /css/style.css HTTP/1.1[0m" 304 -
+2026-04-09 14:36:08,185 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:08] "[36mGET /js/chat.js HTTP/1.1[0m" 304 -
+2026-04-09 14:36:08,200 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:08] "GET /api/me HTTP/1.1" 200 -
+2026-04-09 14:36:08,505 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:08] "GET /api/friends HTTP/1.1" 200 -
+2026-04-09 14:36:08,552 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:08] "GET /api/rooms HTTP/1.1" 200 -
+2026-04-09 14:36:08,870 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:08] "GET /api/messages/General HTTP/1.1" 200 -
+2026-04-09 14:36:09,127 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:09] "GET /api/rooms/invitations HTTP/1.1" 200 -
+2026-04-09 14:36:58,421 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:36:58] "GET /api/messages/Random HTTP/1.1" 200 -
+2026-04-09 14:37:02,822 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:02] "GET /api/messages/Private1 HTTP/1.1" 200 -
+2026-04-09 14:37:03,085 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:03] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:03,147 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:03] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:03,400 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:03] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:03,462 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:03] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:03,711 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:03] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:03,775 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:03] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,025 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,087 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,337 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,400 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,652 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,716 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:04,956 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:04] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:37:05,033 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:05] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:37:05,255 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:37:05] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:38:04,952 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:38:04] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:38:05,256 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:38:05] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:38:36,960 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:38:36] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:38:36,960 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:38:36] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:38:41,943 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:38:41] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:38:42,253 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:38:42] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:39:12,280 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:39:12] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:39:12,281 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:39:12] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:40:04,945 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:40:04] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:40:05,251 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:40:05] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:40:26,787 - werkzeug - INFO -  * Detected change in 'C:\\Users\\D3r\\Documents\\GuardianTextClaude\\backend\\database.py', reloading
+2026-04-09 14:40:27,065 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 14:40:29,987 - database - INFO - Adding role column to room_members table...
+2026-04-09 14:40:30,051 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 14:40:30,058 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 14:40:36,121 - werkzeug - INFO -  * Detected change in 'C:\\Users\\D3r\\Documents\\GuardianTextClaude\\backend\\database.py', reloading
+2026-04-09 14:40:36,434 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 14:40:39,744 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 14:40:39,752 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 14:40:39,783 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:40:39] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:40:39,785 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:40:39] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:40:41,947 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:40:41] "GET /api/dashboard/stats HTTP/1.1" 200 -
+2026-04-09 14:40:42,260 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:40:42] "GET /api/dashboard/logs HTTP/1.1" 200 -
+2026-04-09 14:44:40,259 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.12:5000
+2026-04-09 14:44:40,260 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-09 14:44:40,261 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 14:44:44,251 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 14:44:44,257 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 14:44:44,272 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:44] "[32mGET / HTTP/1.1[0m" 302 -
+2026-04-09 14:44:44,341 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:44] "GET /chat.html HTTP/1.1" 200 -
+2026-04-09 14:44:44,462 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:44] "GET /css/style.css HTTP/1.1" 200 -
+2026-04-09 14:44:44,766 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:44] "GET /js/chat.js HTTP/1.1" 200 -
+2026-04-09 14:44:45,122 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:45] "GET /api/me HTTP/1.1" 200 -
+2026-04-09 14:44:45,126 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:45] "GET /api/friends HTTP/1.1" 200 -
+2026-04-09 14:44:45,376 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:45] "GET /api/rooms HTTP/1.1" 200 -
+2026-04-09 14:44:45,448 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:45] "GET /api/messages/General HTTP/1.1" 200 -
+2026-04-09 14:44:45,720 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:45] "GET /api/rooms/invitations HTTP/1.1" 200 -
+2026-04-09 14:44:47,337 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:47] "GET /api/messages/Private1 HTTP/1.1" 200 -
+2026-04-09 14:44:47,687 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:47] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:47,935 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:47] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:47,996 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:47] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:48,245 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:48,309 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/rooms/260/members HTTP/1.1" 200 -
+2026-04-09 14:44:48,549 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:48,551 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/rooms/260/members HTTP/1.1" 200 -
+2026-04-09 14:44:48,630 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:48,866 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:48,945 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:48] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:49,181 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:49] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:49,260 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:49] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:49,497 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:49] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:49,576 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:49] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:49,813 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:49] "GET /api/friends/status/7 HTTP/1.1" 200 -
+2026-04-09 14:44:56,554 - database - INFO - Room 260 name updated to 'SHabu' by 1
+2026-04-09 14:44:56,554 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:56] "POST /api/rooms/260/rename HTTP/1.1" 200 -
+2026-04-09 14:44:56,882 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:56] "GET /api/rooms HTTP/1.1" 200 -
+2026-04-09 14:44:59,493 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:44:59] "GET /api/messages/Support HTTP/1.1" 200 -
+2026-04-09 14:45:00,983 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:45:00] "GET /api/messages/Random HTTP/1.1" 200 -
+2026-04-09 14:45:01,307 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:45:01] "GET /api/messages/General HTTP/1.1" 200 -
+2026-04-09 14:45:02,740 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:45:02] "GET /api/messages/Support HTTP/1.1" 200 -
+2026-04-09 14:45:06,689 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:45:06] "GET /api/friends/requests HTTP/1.1" 200 -
+2026-04-09 14:45:07,701 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:45:07] "GET /api/friends HTTP/1.1" 200 -
+2026-04-09 14:45:18,127 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:45:18] "GET /api/messages/SHabu HTTP/1.1" 200 -
+2026-04-09 14:47:00,893 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:47:00] "POST /api/logout HTTP/1.1" 200 -
+2026-04-09 14:47:01,160 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:47:01] "GET / HTTP/1.1" 200 -
+2026-04-09 14:47:01,278 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:47:01] "[36mGET /css/style.css HTTP/1.1[0m" 304 -
+2026-04-09 14:47:01,595 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:47:01] "[36mGET /js/auth.js HTTP/1.1[0m" 304 -
+2026-04-09 14:47:01,924 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 14:47:01] "GET /api/me HTTP/1.1" 200 -

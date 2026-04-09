@@ -133,6 +133,46 @@
     </div>
   </div>
 
+  <!-- Room Members Modal -->
+  <div id="members-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Room Members</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeMembersModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="members-section">
+          <div class="members-list" id="members-list"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div id="room-admin-controls" style="margin-right: auto; display: none;">
+          <button class="btn btn-primary btn-sm" onclick="showRenameRoomModal()">✏️ Rename Room</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDeleteRoom()">🗑️ Delete Room</button>
+        </div>
+        <button class="btn btn-ghost" onclick="closeMembersModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rename Room Modal -->
+  <div id="rename-room-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Rename Room</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeRenameRoomModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="rename-room-input" placeholder="New room name..." class="form-input" maxlength="50">
+        <small class="text-muted">2-50 characters</small>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeRenameRoomModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="renameRoom()">Rename</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast-container"></div>
 
   <!-- Socket.IO from CDN -->

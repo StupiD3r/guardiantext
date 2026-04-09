@@ -6,7 +6,7 @@ REM Start Backend (Flask with Socket.IO)
 start "GuardianText Backend" cmd /k "cd /d %~dp0backend && python app.py"
 
 REM Wait a moment for backend to initialize
-timeout /t 3 /nobreak >nul
+timeout /t 5 /nobreak >nul
 
 REM Start Frontend (opens browser)
 echo Opening GuardianText in browser...

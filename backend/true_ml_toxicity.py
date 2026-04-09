@@ -30,6 +30,14 @@ def _normalize_word(word: str) -> str:
     """Normalize word by converting leetspeak/obfuscations to standard text."""
     return word.lower().translate(LEET_MAP)
 
+# Benign words whitelist - never flag these as toxic
+BENIGN_WHITELIST = {
+    'hello', 'hi', 'world', 'good', 'great', 'nice', 'love', 'like',
+    'thanks', 'please', 'help', 'awesome', 'amazing', 'wonderful',
+    'thanks', 'cool', 'beautiful', 'great', 'fantastic', 'excellent',
+    'best', 'good job', 'well done', 'congratulations', 'happy'
+}
+
 @dataclass
 class ToxicWordAnalysis:
     """Result of ML toxic word analysis."""
@@ -396,10 +404,18 @@ class TrueMLToxicityDetector:
         
         # 1. Get overall toxicity score
         toxicity_score = self._get_toxicity_score(message)
-        is_toxic = toxicity_score > 0.5
         
         # 2. Identify toxic words with context
         toxic_words = self._identify_toxic_words(message)
+        
+        # Determine if toxic based on BOTH ML score and word detection
+        # Priority: If toxic words found AND moderate confidence, flag as toxic
+        # If NO toxic words, only flag if EXTREMELY confident (>0.95) to avoid false positives
+        # This compensates for ML model drift/overfitting
+        if toxic_words:
+            is_toxic = toxicity_score > 0.35  # Lower threshold when toxic words detected
+        else:
+            is_toxic = toxicity_score > 0.95  # Very high threshold - nearly impossible to trigger for benign
         
         # 3. Determine severity
         severity = self._get_severity(message) if is_toxic else 'none'
@@ -556,6 +572,11 @@ class TrueMLToxicityDetector:
             word_lower = word.lower()
             # Normalize word to detect obfuscations (fvck -> fuck, sh1t -> shit, etc.)
             word_normalized = _normalize_word(word)
+            
+            # Skip benign words (never flag as toxic)
+            if word_lower in BENIGN_WHITELIST or word_normalized in BENIGN_WHITELIST:
+                continue
+            
             is_censored_toxic = False
             
             for pattern in censored_patterns:

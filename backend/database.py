@@ -136,6 +136,16 @@ def init_db():
     except sqlite3.OperationalError:
         pass
     
+    # Add profile columns (profile picture and status)
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN profile_picture TEXT")
+    except sqlite3.OperationalError:
+        pass
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN status TEXT DEFAULT 'Available'")
+    except sqlite3.OperationalError:
+        pass
+    
     # Add private room columns to rooms table
     try:
         cursor.execute("ALTER TABLE rooms ADD COLUMN is_private INTEGER DEFAULT 0")
@@ -201,6 +211,19 @@ def init_db():
     cursor.execute("INSERT OR IGNORE INTO rooms (name) VALUES ('General')")
     cursor.execute("INSERT OR IGNORE INTO rooms (name) VALUES ('Support')")
     cursor.execute("INSERT OR IGNORE INTO rooms (name) VALUES ('Random')")
+    
+    # Create indexes for performance
+    try:
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_room ON messages(room)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages(timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_room_members_room_user ON room_members(room_id, user_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_friendships_user ON friendships(user_id, friend_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_filter_logs_user_timestamp ON filter_logs(user_id, timestamp)")
+        logger.info("Database indexes created/verified")
+    except Exception as e:
+        logger.warning(f"Index creation error (non-critical): {e}")
+    
     conn.commit()
     conn.close()
     print("[DB] Database initialized.")
@@ -247,6 +270,69 @@ def verify_user(username, password):
         conn.close()
 
 def get_user_by_id(user_id):
+    """Get user by ID."""
+    conn = get_db()
+    try:
+        row = conn.execute("SELECT * FROM users WHERE id=?", (user_id,)).fetchone()
+        return dict(row) if row else None
+    except Exception as e:
+        logger.error(f"Error fetching user by ID: {e}")
+        return None
+    finally:
+        conn.close()
+
+def change_password(user_id, old_password, new_password):
+    """Change user password after verification."""
+    conn = get_db()
+    try:
+        row = conn.execute("SELECT password_hash FROM users WHERE id=?", (user_id,)).fetchone()
+        
+        if not row or not verify_password(old_password, row['password_hash']):
+            logger.warning(f"Password change failed: wrong old password for user {user_id}")
+            return False, "Current password is incorrect."
+        
+        new_hash = hash_password(new_password)
+        conn.execute("UPDATE users SET password_hash=? WHERE id=?", (new_hash, user_id))
+        conn.commit()
+        logger.info(f"Password changed for user {user_id}")
+        return True, "Password changed successfully."
+    except Exception as e:
+        logger.error(f"Error changing password: {e}")
+        return False, str(e)
+    finally:
+        conn.close()
+
+def get_user_profile(user_id):
+    """Get user profile (public info)."""
+    conn = get_db()
+    try:
+        row = conn.execute(
+            "SELECT id, username, profile_picture, status, created_at FROM users WHERE id=?",
+            (user_id,)
+        ).fetchone()
+        return dict(row) if row else None
+    except Exception as e:
+        logger.error(f"Error fetching profile: {e}")
+        return None
+    finally:
+        conn.close()
+
+def update_user_profile(user_id, profile_picture=None, status=None):
+    """Update user profile (picture and/or status)."""
+    conn = get_db()
+    try:
+        if profile_picture is not None:
+            conn.execute("UPDATE users SET profile_picture=? WHERE id=?", (profile_picture, user_id))
+        if status is not None:
+            conn.execute("UPDATE users SET status=? WHERE id=?", (status[:100], user_id))  # Max 100 chars
+        conn.commit()
+        logger.info(f"Profile updated for user {user_id}")
+        return True, "Profile updated successfully."
+    except Exception as e:
+        logger.error(f"Error updating profile: {e}")
+        return False, str(e)
+    finally:
+        conn.close()
     conn = get_db()
     row = conn.execute("SELECT * FROM users WHERE id=?", (user_id,)).fetchone()
     conn.close()

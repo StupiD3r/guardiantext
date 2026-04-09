@@ -49,7 +49,8 @@ from database import (init_db, create_user, verify_user, save_message,
                       get_room_invitations, accept_room_invitation,
                       decline_room_invitation, user_has_room_access_by_name,
                       is_room_admin, promote_to_admin, demote_to_member,
-                      kick_member, delete_room, update_room_name)
+                      kick_member, delete_room, update_room_name,
+                      change_password, get_user_profile, update_user_profile)
 from auth import validate_username, validate_password, login_required, get_current_user
 from nlp_filter import analyze_message, FilterResult
 from learning_suggestions import generate_ml_suggestions, learn_from_user_choice
@@ -256,6 +257,67 @@ def me():
     if not user:
         return jsonify({"logged_in": False})
     return jsonify({"logged_in": True, **user})
+
+@app.route('/api/profile', methods=['GET'])
+@login_required
+def get_profile():
+    """Get current user's profile."""
+    user = get_current_user()
+    profile = get_user_profile(user['id'])
+    return jsonify(profile) if profile else jsonify({"error": "Profile not found"}), 404
+
+@app.route('/api/profile/<int:user_id>')
+@login_required
+def get_other_profile(user_id):
+    """Get another user's public profile."""
+    profile = get_user_profile(user_id)
+    if not profile:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify(profile)
+
+@app.route('/api/profile/change-password', methods=['POST'])
+@login_required
+def change_password_api():
+    """Change current user's password."""
+    user = get_current_user()
+    data = request.get_json()
+    old_password = data.get('old_password', '')
+    new_password = data.get('new_password', '')
+    
+    valid, msg = validate_password(new_password)
+    if not valid:
+        return jsonify({"error": msg}), 400
+    
+    success, message = change_password(user['id'], old_password, new_password)
+    return jsonify({"success": success, "message": message}), 200 if success else 400
+
+@app.route('/api/profile/avatar', methods=['POST'])
+@login_required
+def update_avatar():
+    """Update profile picture (base64 or URL)."""
+    user = get_current_user()
+    data = request.get_json()
+    picture_data = data.get('profile_picture', '')
+    
+    if len(picture_data) > 100000:  # Max 100KB
+        return jsonify({"error": "Image too large"}), 400
+    
+    success, message = update_user_profile(user['id'], profile_picture=picture_data)
+    return jsonify({"success": success, "message": message}), 200 if success else 400
+
+@app.route('/api/profile/status', methods=['POST'])
+@login_required
+def update_status():
+    """Update user status (online, away, busy, etc.)."""
+    user = get_current_user()
+    data = request.get_json()
+    status = data.get('status', 'Available')
+    
+    if len(status) > 100:
+        return jsonify({"error": "Status too long"}), 400
+    
+    success, message = update_user_profile(user['id'], status=status)
+    return jsonify({"success": success, "message": message}), 200 if success else 400
 
 # ── Chat API ──────────────────────────────────────────────────────────────────
 

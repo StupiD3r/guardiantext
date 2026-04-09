@@ -298,3 +298,46 @@
 2026-04-09 15:01:24,381 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:01:24] "GET /api/messages/SHabu HTTP/1.1" 200 -
 2026-04-09 15:01:27,637 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:01:27] "GET /api/rooms/260/members HTTP/1.1" 200 -
 2026-04-09 15:01:27,893 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:01:27] "GET /api/rooms/260/members HTTP/1.1" 200 -
+2026-04-09 15:33:59,525 - database - INFO - Default admin user ensured
+2026-04-09 15:33:59,813 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.12:5000
+2026-04-09 15:33:59,814 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-09 15:33:59,814 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 15:34:03,454 - database - INFO - Default admin user ensured
+2026-04-09 15:34:03,486 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 15:34:03,494 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 15:34:03,512 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:03] "[32mGET / HTTP/1.1[0m" 302 -
+2026-04-09 15:34:03,608 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:03] "[36mGET /chat.html HTTP/1.1[0m" 304 -
+2026-04-09 15:34:03,741 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:03] "[36mGET /css/style.css HTTP/1.1[0m" 304 -
+2026-04-09 15:34:04,056 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:04] "[36mGET /js/chat.js HTTP/1.1[0m" 304 -
+2026-04-09 15:34:04,383 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:04] "GET /api/me HTTP/1.1" 200 -
+2026-04-09 15:34:04,389 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:04] "GET /api/friends HTTP/1.1" 200 -
+2026-04-09 15:34:04,638 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:04] "GET /api/rooms HTTP/1.1" 200 -
+2026-04-09 15:34:04,718 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:04] "GET /api/messages/General HTTP/1.1" 200 -
+2026-04-09 15:34:04,957 - werkzeug - INFO - 127.0.0.1 - - [09/Apr/2026 15:34:04] "GET /api/rooms/invitations HTTP/1.1" 200 -
+2026-04-09 15:40:53,438 - werkzeug - INFO -  * Detected change in 'C:\\Users\\D3r\\Documents\\GuardianTextClaude\\backend\\database.py', reloading
+2026-04-09 15:40:53,816 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 15:40:57,295 - database - INFO - Default admin user ensured
+2026-04-09 15:40:57,334 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 15:40:57,340 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 15:41:07,491 - werkzeug - INFO -  * Detected change in 'C:\\Users\\D3r\\Documents\\GuardianTextClaude\\backend\\database.py', reloading
+2026-04-09 15:41:07,854 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 15:41:11,354 - database - INFO - Database indexes created/verified
+2026-04-09 15:41:11,362 - database - INFO - Default admin user ensured
+2026-04-09 15:41:11,398 - werkzeug - WARNING -  * Debugger is active!
+2026-04-09 15:41:11,404 - werkzeug - INFO -  * Debugger PIN: 932-426-514
+2026-04-09 15:41:53,778 - werkzeug - INFO -  * Detected change in 'C:\\Users\\D3r\\Documents\\GuardianTextClaude\\backend\\database.py', reloading
+2026-04-09 15:41:54,117 - werkzeug - INFO -  * Restarting with stat
+2026-04-09 15:48:23,213 - database - INFO - Database indexes created/verified
+2026-04-09 15:48:23,220 - database - INFO - Default admin user ensured
+2026-04-09 15:51:58,235 - database - INFO - User created: testuser
+2026-04-09 15:51:58,494 - database - INFO - User login successful: testuser
+2026-04-09 15:51:59,067 - database - INFO - Password changed for user 9
+2026-04-09 15:51:59,350 - database - WARNING - Failed login attempt for: testuser
+2026-04-09 15:51:59,633 - database - INFO - User login successful: testuser
+2026-04-09 15:51:59,646 - database - INFO - Profile updated for user 9
+2026-04-09 15:51:59,659 - database - INFO - Profile updated for user 9
+2026-04-09 15:53:02,176 - database - INFO - Database indexes created/verified
+2026-04-09 15:53:02,185 - database - INFO - Default admin user ensured

@@ -544,16 +544,28 @@ class TrueMLToxicityDetector:
         words = re.findall(r'\b\w+\b', message)
         toxic_words = []
         
-        # Known toxic words for fallback - more precise list
-        known_toxic = {
-            'fuck', 'fucking', 'fucked', 'fucks', 'shit', 'shitty', 'shitting',
-            'idiot', 'idiots', 'stupid', 'dumb', 'dumber', 'dumbest',
-            'moron', 'morons', 'asshole', 'assholes', 'bastard', 'bastards',
-            'bitch', 'bitches', 'crap', 'crappy', 'damn', 'damned',
-            'hell', 'hate', 'hated', 'hates', 'pathetic', 'worthless',
-            'useless', 'terrible', 'awful', 'horrible', 'disgusting',
-            'scum', 'garbage', 'trash', 'dumbass', 'dumbasses'
-        }
+        # Import comprehensive toxic words from nlp_filter
+        try:
+            from nlp_filter import TOXIC_WORDS
+            known_toxic = set(TOXIC_WORDS.keys())
+        except:
+            # Fallback to hardcoded list if import fails
+            known_toxic = {
+                'fuck', 'fucking', 'fucked', 'fucks', 'shit', 'shitty', 'shitting',
+                'idiot', 'idiots', 'stupid', 'dumb', 'dumber', 'dumbest',
+                'moron', 'morons', 'asshole', 'assholes', 'bastard', 'bastards',
+                'bitch', 'bitches', 'crap', 'crappy', 'damn', 'damned',
+                'hell', 'hate', 'hated', 'hates', 'pathetic', 'worthless',
+                'useless', 'terrible', 'awful', 'horrible', 'disgusting',
+                'scum', 'garbage', 'trash', 'dumbass', 'dumbasses',
+                # Add new terms
+                'pussy', 'cock', 'dick', 'dildo', 'cunt', 'whore', 'slut', 'pervert',
+                'nigger', 'nigga', 'spic', 'chink', 'gook', 'wetback', 'beaner', 'jap',
+                'towelhead', 'raghead', 'paki', 'cracker', 'honky', 'kyke', 'yid',
+                'piss', 'pissed', 'arse', 'arsehole', 'fart', 'semen', 'cum', 'jizz',
+                'rape', 'murder', 'kill', 'bomb', 'terrorist', 'nazi', 'genocide',
+                'tranny', 'dyke', 'homo', 'queer', 'faggot', 'bullshit', 'horseshit'
+            }
         
         # Also check for censored patterns
         censored_patterns = [
